@@ -73,8 +73,22 @@ class Custom_Lead_API extends WP_REST_Controller
 	{
 		$card1 = new Lead_Card('Rohit', 'Lucknow', 'CEO', 'Nirvana');
 		$card2 = new Lead_Card('Anantharam', 'Chennai', 'CTO', 'Relationship');
+		$data_object = array();
 
-		$data_object = array($card1, $card2);
+		global $wpdb;
+		$q = "select * from {$wpdb->prefix}edugorilla_lead";
+		$leads_details = $wpdb->get_results($q, 'ARRAY_A');
+		foreach ($leads_details as $leads_detail) {
+			$lead_name = $leads_detail['name'];
+			$lead_email = $leads_detail['contact_no'];
+			$lead_contact_no = $leads_detail['email'];
+			$lead_query = $leads_detail['query'];
+			$lead_category = $leads_detail['category_id'];
+			$lead_location = $leads_detail['location_id'];
+			$db_card = new Lead_Card($lead_name, $lead_category, $lead_location, $lead_query);
+			$data_object[] = $db_card;
+		}
+
 
 		// Create the response object
 		$response = new WP_REST_Response($data_object);

@@ -18,24 +18,28 @@
 			</div>
 			<h6 class="ref_heading"> Refine: </h6>
 			<hr>
-            <h6 class="ref_heading">By Category</h6>
+            <h6 class="ref_heading">By Category : </h6>
             <ul class="refine">
-                <a href="#"><li>CAT Coaching <span class="ref_val">({{}})</span></li></a>
-                <a href="#"><li>JEE Coaching <span class="ref_val">({{}})</span></li></a>
-                <a href="#"><li>JAVA Coaching <span class="ref_val">({{}})</span></li></a>
-                <a href="#"><li class="see_more">[+]See More</li></a>
+	            <li ng-repeat="topCategory in topCategories" ng-click="setSelectedCategories(topCategory)">
+		            <span ng-if="containsInArray(userSelectedCategories,topCategory.Name)">-</span>
+		            <span ng-if="!containsInArray(userSelectedCategories,topCategory.Name)">+</span>
+		            {{topCategory.Name}}<span class="ref_val">({{topCategory.Count}})</span>
+	            </li>
+                <li class="see_more">[+]See More</li>
             </ul>
-            <h6 class="ref_heading">By Location</h6>
+            <h6 class="ref_heading">By Location : </h6>
             <ul class="refine">
-                <a href="#"><li>Delhi <span class="ref_val">({{}})</span></li></a>
-                <a href="#"><li>Mumbai <span class="ref_val">({{}})</span></li></a>
-                <a href="#"><li>Bangalore <span class="ref_val">({{}})</span></li></a>
+	            <li ng-repeat="topLocation in topLocations" ng-click="setSelectedLocations(topLocation)">
+		            <span ng-if="containsInArray(userSelectedLocations,topLocation.Name)">-</span>
+		            <span ng-if="!containsInArray(userSelectedLocations,topLocation.Name)">+</span>
+		            {{topLocation.Name}}<span class="ref_val">({{topLocation.Count}})</span>
+	            </li>
                 <a href="#"><li class="see_more">[+]See More</li></a>
             </ul>
 		</div>
 		<div class="container col-sm-8">
 			<div ng-repeat="card in cards" class="repeated-item">
-				<div class="container col-sm-6" id="stamp" ng-if="(user_hidden || !card.isHidden) && (!user_location || card.Location == user_location) && (!user_category || card.Category == user_category)">
+				<div class="container col-sm-6" id="stamp" ng-if="cardSelectionCriteria(card)">
 					<div class="contents">
 						<div class="col-sm-12 bgimg">
 							<ul class="card-cont">
