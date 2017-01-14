@@ -1,12 +1,12 @@
 <?php
-function educash_deals_form_page()
+function allocate_educash_form_page()
 {
     global $wpdb;
-	$table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_tranaction';
+    $table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_transactions';
     $users_table = $wpdb->prefix.users;
-
+    
 //Checking if the admin has filled adequate information to submit the form to allot educash and inserting the legal values in table
-
+    
     if ($_POST['submit']) {
         if (empty($_POST['clientName'])) {
             $clientnamerr = "<span  style='color:red;'>* This field cannot be blank</span>";
@@ -40,16 +40,7 @@ function educash_deals_form_page()
             ));
            }
         }
-    }
-
-//Checking if the admin has filled atleast one field to submit the form to see history 
-
-    if ($_POST['Submit']) {
-        if (empty($_POST['admin_Name']) && empty($_POST['client_Name']) && empty($_POST['date']) && empty($_POST['date2'])) {
-            $all_four_error = "<span style='color:red;'> * All four fields cannot be blank</span>";
-        }
-    }
-    
+    }    
 //Form to allocate educash
 ?>
 <script>
@@ -72,8 +63,7 @@ function educash_deals_form_page()
     else {return confirm('Do you really want to submit this entry?');}
 }
 </script>
-    <div style='height:400px;'></div>
-    <div style='display:inline-block; width:50%; position:absolute; top:0;left:0;'><center><h2>Use this form to allocate educash to a client</h2><br/>
+    <center><h2>Use this form to allocate educash to a client</h2><br/>
     <form name="myForm" method='post' onsubmit="return validate_allotment_form()" action="<?php echo $_SERVER['REQUEST_URI'];?>">
              Client Email (Type the Email Id of the client whom you want to allot educash):<br/><input type='text' id='input1' name='clientName' maxlength='100'>*<br/>
                                                                                                 <span style='color:red;' id='errmsg1'></span>
@@ -85,21 +75,9 @@ function educash_deals_form_page()
                                                                        <br/><br/>
              Type your comments here (optional):<br/><textarea rows='4' cols='60' name='adminComment' maxlength='500'></textarea><br/><br/>
              <input type='submit' name='submit'><br/>
-             </form></center></div>
-    
+             </form></center>
 <?php
-//Form to see history of educash transactions
-    echo "<div style='display:inline-block; width:50%; position:absolute; top:0; right:0;'><center><h2>Use this form to know the history of educash transactions</h2>";
-    echo "<p style='color:green;'>Fill atleast one field<p>";
-    echo "<form method='post' action='" . $_SERVER['REQUEST_URI'] . "'>
-             Admin Email (Type the email Id of the admin whose history you want to see):<br/><input type='text' name='admin_Name' maxlength='100'><br/><br/>
-             Client Email (Type the emailId of the client whose history you want to see):<br/><input type='text' name='client_Name' max='100'><br/><br/>
-             Date From: <input type='date' name='date' min='1990-12-31' max='2050-12-31'>
-             Date To: <input type='date' name='date2' min='1990-12-31' max='2050-12-31'><br/><br/>
-             <input type='submit' name='Submit'><br/>" . $all_four_error . "<br/><br/><br/>
-             </form></center></div>";
-
-//Displaying the transaction made just now if the values are legal and sending a mail to respective client otherwise displaying error message 
+//Displaying the transaction made just now if the values are legal and sending a mail to respective client otherwise displaying error message
 
     $client_display_name = $wpdb->get_var("SELECT display_name FROM $users_table WHERE user_email = '$clientName' ");
     if ($_POST['submit'] && (!empty($_POST['clientName'])) && (!empty($_POST['educash'])) && (!($check_client == 0))) {
@@ -119,6 +97,7 @@ function educash_deals_form_page()
         $edugorilla_email_datas2 = get_option('edugorilla_email_setting3');
         $arr1 = array("{Contact_Person}", "{ReceivedCount}", "{EduCashCount}", "{EduCashUrl}", "<pre>", "</pre>", "<code>", "</code>", "<b>", "</b>");
         $to = $clientName;
+        $attachment = array(WP_CONTENT_DIR . '/uploads/2017/01/INV-1821.1.pdf');
         if($educash>0){
         $positive_email_subject = $edugorilla_email_datas['subject'];
         $subject =  $positive_email_subject;
@@ -134,7 +113,7 @@ function educash_deals_form_page()
         $negative_email_body = str_replace($arr1, $arr3, $edugorilla_email_datas2['body']);
         $message =  $negative_email_body;
         }
-        wp_mail( $to, $subject, $message );
+        wp_mail( $to, $subject, $message, '', $attachment);
         $r = $wpdb->get_row("SELECT * FROM $table_name3 WHERE time = '$time' ");
         echo "<center></p>You have made the following entry just now:</p>";
         echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
@@ -142,23 +121,49 @@ function educash_deals_form_page()
         echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
         echo "</table></center><br/><br/>";
       }
+   }
+}
+
+function transaction_history_form_page()
+{
+    global $wpdb;
+    $table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_transactions';
+    $users_table = $wpdb->prefix.users;
+    
+//Checking if the admin has filled atleast one field to submit the form to see history 
+    
+    if ($_POST['Submit']) {
+        if (empty($_POST['admin_Name']) && empty($_POST['client_Name']) && empty($_POST['date']) && empty($_POST['date2'])) {
+            $all_four_error = "<span style='color:red;'> * All four fields cannot be blank</span>";
+        }
     }
-
+    
+//Form to see history of educash transactions
+    
+    echo "<center><h2>Use this form to know the history of educash transactions</h2>";
+    echo "<p style='color:green;'>Fill atleast one field<p>";
+    echo "<form method='post' action='" . $_SERVER['REQUEST_URI'] . "'>
+             Admin Email (Type the email Id of the admin whose history you want to see):<br/><input type='text' name='admin_Name' maxlength='100'><br/><br/>
+             Client Email (Type the emailId of the client whose history you want to see):<br/><input type='text' name='client_Name' max='100'><br/><br/>
+             Date From: <input type='date' name='date' min='1990-12-31' max='2050-12-31'>
+             Date To: <input type='date' name='date2' min='1990-12-31' max='2050-12-31'><br/><br/>
+             <input type='submit' name='Submit'><br/>" . $all_four_error . "<br/><br/><br/>
+             </form></center>";
+    
 //Displaying the history of required fields
-
+    
        $admin_Name = $_POST['admin_Name'];
        $client_Name = $_POST['client_Name']; 
        $admin_ID_result = $wpdb->get_var("SELECT ID FROM $users_table WHERE user_email = '$admin_Name' ");
        $client_ID_result = $wpdb->get_var("SELECT ID FROM $users_table WHERE user_email = '$client_Name' ");
        $date = $_POST['date'];
        $date2 = $_POST['date2'];    
-
     if (($_POST['Submit']))
           if((!empty($_POST['admin_Name']) || !empty($_POST['client_Name'])) && empty($_POST['date']) && empty($_POST['date2'])) {
             $check_result = $wpdb->get_var("SELECT COUNT(ID) FROM $table_name3  WHERE IF('$admin_Name' != '', admin_id = '$admin_ID_result', 1=1) AND
                                             IF('$client_Name' != '', client_id = '$client_ID_result', 1=1)");
             if($check_result == 0){
-            echo "<center><span style='color:red; position:absolute; top:400px;'>No records found</span></center>";
+            echo "<center><span style='color:red;'>No records found</span></center>";
             }
             else{
             $results = $wpdb->get_results("SELECT * FROM $table_name3 WHERE IF('$admin_Name' != '', admin_id = '$admin_ID_result', 1=1) AND
@@ -184,7 +189,7 @@ function educash_deals_form_page()
             $check_result = $wpdb->get_var("SELECT COUNT(ID) FROM $table_name3  WHERE IF('$admin_Name' != '', admin_id = '$admin_ID_result', 1=1) AND
                                             IF('$client_Name' != '', client_id = '$client_ID_result', 1=1) AND DATE(time) BETWEEN '$date' AND '2050-12-31' ");
             if($check_result == 0){
-            echo "<center><span style='color:red; position:absolute; top:400px;'>No records found</span></center>";
+            echo "<center><span style='color:red;'>No records found</span></center>";
             }
             else{
             $results = $wpdb->get_results("SELECT * FROM $table_name3 WHERE IF('$admin_Name' != '', admin_id = '$admin_ID_result', 1=1) AND
@@ -210,7 +215,7 @@ function educash_deals_form_page()
             $check_result = $wpdb->get_var("SELECT COUNT(ID) FROM $table_name3  WHERE IF('$admin_Name' != '', admin_id = '$admin_ID_result', 1=1) AND
                                             IF('$client_Name' != '', client_id = '$client_ID_result', 1=1) AND DATE(time) BETWEEN 'TRUE' AND '$date2' ");
             if($check_result == 0){
-            echo "<center><span style='color:red; position:absolute; top:400px;'>No records found</span></center>";
+            echo "<center><span style='color:red;'>No records found</span></center>";
             }
             else{
             $results = $wpdb->get_results("SELECT * FROM $table_name3 WHERE IF('$admin_Name' != '', admin_id = '$admin_ID_result', 1=1) AND
@@ -235,7 +240,7 @@ function educash_deals_form_page()
           if((empty($_POST['admin_Name']) && empty($_POST['client_Name'])) && !empty($_POST['date']) && empty($_POST['date2'])) {
             $check_result = $wpdb->get_var("SELECT COUNT(ID) FROM $table_name3  WHERE DATE(time) BETWEEN '$date' AND '2050-12-31' ");
             if($check_result == 0){
-            echo "<center><span style='color:red; position:absolute; top:400px;'>No records found</span></center>";
+            echo "<center><span style='color:red;'>No records found</span></center>";
             }
             else{
             $results = $wpdb->get_results("SELECT * FROM $table_name3 WHERE DATE(time) BETWEEN '$date' AND '2050-12-31' ");
@@ -258,7 +263,7 @@ function educash_deals_form_page()
           if((empty($_POST['admin_Name']) && empty($_POST['client_Name'])) && empty($_POST['date']) && !empty($_POST['date2'])) {
             $check_result = $wpdb->get_var("SELECT COUNT(ID) FROM $table_name3  WHERE DATE(time) BETWEEN 'TRUE' AND '$date2' ");
             if($check_result == 0){
-            echo "<center><span style='color:red; position:absolute; top:400px;'>No records found</span></center>";
+            echo "<center><span style='color:red;'>No records found</span></center>";
             }
             else{
             $results = $wpdb->get_results("SELECT * FROM $table_name3 WHERE DATE(time) BETWEEN 'TRUE' AND '$date2' ");
@@ -281,7 +286,7 @@ function educash_deals_form_page()
           if((empty($_POST['admin_Name']) && empty($_POST['client_Name'])) && !empty($_POST['date']) && !empty($_POST['date2'])) {
             $check_result = $wpdb->get_var("SELECT COUNT(ID) FROM $table_name3  WHERE DATE(time) BETWEEN '$date' AND '$date2' ");
             if($check_result == 0){
-            echo "<center><span style='color:red; position:absolute; top:400px;'>No records found</span></center>";
+            echo "<center><span style='color:red;'>No records found</span></center>";
             }
             else{
             $results = $wpdb->get_results("SELECT * FROM $table_name3 WHERE DATE(time) BETWEEN '$date' AND '$date2' ");
