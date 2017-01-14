@@ -43,15 +43,17 @@
 					<div class="contents">
 						<div class="col-sm-12 bgimg">
 							<ul class="card-cont">
-								<li><i class="fa fa-user fa-fw" aria-hidden="true"></i>{{card.Name}}</li>
-								<li><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>{{card.Location}}</li>
-								<li><i class="fa fa-tag fa-fw" aria-hidden="true"></i>{{card.Category}}</li>
+								<li><i class="fa fa-user fa-fw" aria-hidden="true"></i>{{card.name}}</li>
+								<li><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>{{card.location}}</li>
+								<li><i class="fa fa-tag fa-fw" aria-hidden="true"></i>{{card.category}}</li>
 							</ul>
 						</div>
 					</div>
 					<div class="content col-sm-12">
 						<h6>Asks</h6>
-						<p>{{card.Query}}</p>
+						<p>{{card.query}}</p>
+						<p ng-if="card.isUnlocked">{{card.email}}</p>
+						<p ng-if="card.isUnlocked">{{card.contact_no}}</p>
 						<div class="hide_lead" ng-if="!card.isHidden">
 							<button type="submit" class="btn btn-danger" ng-click="toggle_card_hidden(card)">
 								<i class="fa fa-eye-slash fa-fw"></i> Hide
@@ -62,8 +64,8 @@
 								<i class="fa fa-eye fa-fw"></i> Show
 							</button>
 						</div>
-						<div class="unlock">
-							<button type="submit" class="btn btn-success">
+						<div class="unlock" ng-if="!card.isUnlocked">
+							<button type="submit" class="btn btn-success" ng-click="unlock_card_if_possible(card)">
 								<i class="fa fa-unlock-alt fa" aria-hidden="true">
 									Unlock</i></button>
 						</div>

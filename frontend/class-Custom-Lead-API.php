@@ -71,24 +71,9 @@ class Custom_Lead_API extends WP_REST_Controller
 	 */
 	public function get_lead_details($request)
 	{
-		$card1 = new Lead_Card('Rohit', 'Lucknow', 'CEO', 'Nirvana');
-		$card2 = new Lead_Card('Anantharam', 'Chennai', 'CTO', 'Relationship');
-		$data_object = array();
-
-		global $wpdb;
-		$q = "select * from {$wpdb->prefix}edugorilla_lead";
-		$leads_details = $wpdb->get_results($q, 'ARRAY_A');
-		foreach ($leads_details as $leads_detail) {
-			$lead_name = $leads_detail['name'];
-			$lead_email = $leads_detail['contact_no'];
-			$lead_contact_no = $leads_detail['email'];
-			$lead_query = $leads_detail['query'];
-			$lead_category = $leads_detail['category_id'];
-			$lead_location = $leads_detail['location_id'];
-			$db_card = new Lead_Card($lead_name, $lead_category, $lead_location, $lead_query);
-			$data_object[] = $db_card;
-		}
-
+		//$card1 = new Lead_Card('Rohit', 'Lucknow', 'CEO', 'Nirvana');
+		//$card2 = new Lead_Card('Anantharam', 'Chennai', 'CTO', 'Relationship');
+		$data_object = get_lead_details_from_db();
 
 		// Create the response object
 		$response = new WP_REST_Response($data_object);
@@ -319,4 +304,35 @@ try {
 	add_action('rest_api_init', [$leadAPI, 'register_routes']);
 } catch (Exception $e) {
 	echo 'Message: ' . $e->getMessage();
+}
+
+/**
+ * Get details of all the leads table from database
+ *
+ */
+function get_lead_details_from_db()
+{
+	//$card1 = new Lead_Card('Rohit', 'Lucknow', 'CEO', 'Nirvana');
+	//$card2 = new Lead_Card('Anantharam', 'Chennai', 'CTO', 'Relationship');
+	$cards_object = array();
+
+	global $wpdb;
+	$q = "select * from {$wpdb->prefix}edugorilla_lead";
+	$leads_details = $wpdb->get_results($q, 'ARRAY_A');
+	foreach ($leads_details as $leads_detail) {
+		$lead_id = $leads_detail['leadId'];
+		$lead_name = $leads_detail['name'];
+		$lead_email = $leads_detail['contact_no'];
+		$lead_contact_no = $leads_detail['email'];
+		$lead_query = $leads_detail['query'];
+		$lead_category = $leads_detail['category_id'];
+		$lead_location = $leads_detail['location_id'];
+		$lead_date_time = $leads_detail['date_time'];
+		$lead_is_unlocked = $leads_detail['isUnlocked'];
+		$lead_is_hidden = $leads_detail['isHidden'];
+		$db_card = new Lead_Card($lead_id, $lead_name, $lead_email, $lead_contact_no, $lead_query, $lead_category, $lead_location, $lead_date_time, $lead_is_unlocked, $lead_is_hidden);
+		$cards_object[] = $db_card;
+	}
+
+	return $cards_object;
 }

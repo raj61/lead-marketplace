@@ -28,25 +28,72 @@
 			$scope.userSelectedLocations = [];
 			$scope.userSelectedCategories = [];
 			$scope.setSelectedCategories = function(prop){
-				if(!($scope.containsInArray($scope.userSelectedCategories,prop.Name))) {
-					$scope.userSelectedCategories.push(prop.Name);
+				if (!($scope.containsInArray($scope.userSelectedCategories, prop.name))) {
+					$scope.userSelectedCategories.push(prop.name);
 				}else{
-					removeItemFromArray($scope.userSelectedCategories,prop.Name);
+					removeItemFromArray($scope.userSelectedCategories, prop.name);
 				}
 			};
 			$scope.setSelectedLocations = function(prop){
-				if(!($scope.containsInArray($scope.userSelectedLocations,prop.Name))) {
-					$scope.userSelectedLocations.push(prop.Name);
+				if (!($scope.containsInArray($scope.userSelectedLocations, prop.name))) {
+					$scope.userSelectedLocations.push(prop.name);
 				}else {
-					removeItemFromArray($scope.userSelectedLocations,prop.Name);
+					removeItemFromArray($scope.userSelectedLocations, prop.name);
 				}
 			};
 			$scope.toggle_card_hidden = function (card) {
 				card.isHidden = !card.isHidden;
 			};
+			$scope.unlock_card_if_possible = function (card) {
+				card.isUnlocked = !card.isUnlocked;
+			};
 			$scope.cards = [];
 			$scope.topLocations = [];
 			$scope.topCategories = [];
+			function populateScopevariablesFromAPI(data) {
+				var locationCount = {};
+				var categoryCount = {};
+				for (var index = 0; index < data.length; ++index) {
+					var card = data[index].lead_card;
+					var locationInt = ++locationCount[card.location];
+					var catrgoryInt = ++categoryCount[card.category];
+					if (isNaN(locationInt)) {
+						locationCount[card.location] = locationInt = 1;
+					}
+					if (isNaN(catrgoryInt)) {
+						categoryCount[card.category] = catrgoryInt = 1;
+					}
+					var currentLocation = {
+						Name: card.location,
+						Count: locationInt
+					};
+					var currentCategory = {
+						Name: card.category,
+						Count: catrgoryInt
+					};
+					$scope.cards.push(card);
+					var isExistingLocation = false;
+					var isExistingCategory = false;
+					for (var topLocation in $scope.topLocations) {
+						if (topLocation.Name == currentLocation.Name) {
+							isExistingLocation = true;
+							topLocation.Count = locationInt;
+						}
+					}
+					for (var topCategory in $scope.topCategories) {
+						if (topCategory.Name == currentCategory.Name) {
+							isExistingCategory = true;
+							topCategory.Count = catrgoryInt;
+						}
+					}
+					if (!isExistingLocation) {
+						$scope.topLocations.push(currentLocation);
+					}
+					if (!isExistingCategory) {
+						$scope.topCategories.push(currentCategory);
+					}
+				}
+			};
 			$http({
 				url: '/wp-json/marketplace/v1/leads/details',
 				cache: true
@@ -54,41 +101,7 @@
 				.success(function (data, status, headers, config) {
 					// this callback will be called asynchronously
 					// when the response is available
-					var locationCount = {};
-					var categoryCount = {};
-					for (var index = 0; index < data.length; ++index) {
-						var card = data[index].lead_card;
-						var current_card = {
-							Name: card.name,
-							Location: card.location,
-							Category: card.category,
-							Query: card.query,
-							isHidden: card.isHidden
-						};
-						var locationInt = ++locationCount[card.location];
-						var catrgoryInt = ++categoryCount[card.category];
-						if(isNaN(locationInt)) {
-							locationCount[card.location] = locationInt = 1;
-						}
-						if(isNaN(catrgoryInt)) {
-							categoryCount[card.category] = catrgoryInt = 1;
-						}
-						var currentLocation = {
-							Name: card.location,
-							Count:locationInt
-						};
-						var currentCategory = {
-							Name: card.category,
-							Count:catrgoryInt
-						};
-						$scope.cards.push(current_card);
-						if(!(currentLocation in $scope.topLocations)) {
-							$scope.topLocations.push(currentLocation);
-						}
-						if(!(currentCategory in $scope.topCategories)) {
-							$scope.topCategories.push(currentCategory);
-						}
-					}
+					populateScopevariablesFromAPI(data);
 				})
 				.error(function (data, status, header, config) {
 					// called asynchronously if an error occurs

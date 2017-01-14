@@ -18,6 +18,8 @@ wp-content/plugins/hello.php
 
 # User-specific stuff:
 .idea/workspace.xml
+.idea/deployment.xml
+.idea/webServers.xml
 .idea/tasks.xml
 
 ## File-based project format:
