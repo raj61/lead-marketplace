@@ -9,6 +9,9 @@
 				if(!$scope.user_hidden && card.isHidden) {
 					return false;
 				}
+				if ($scope.user_purchased && !card.isUnlocked) {
+					return false;
+				}
 				if($scope.userSelectedLocations!=0 && !($scope.containsInArray($scope.userSelectedLocations,card.Location))) {
 					return false;
 				}
@@ -74,16 +77,16 @@
 					$scope.cards.push(card);
 					var isExistingLocation = false;
 					var isExistingCategory = false;
-					for (var topLocation in $scope.topLocations) {
-						if (topLocation.Name == currentLocation.Name) {
+					for (var i = 0; i < $scope.topLocations.length; i++) {
+						if ($scope.topLocations[i].Name == currentLocation.Name) {
 							isExistingLocation = true;
-							topLocation.Count = locationInt;
+							$scope.topLocations[i].Count = locationInt;
 						}
 					}
-					for (var topCategory in $scope.topCategories) {
-						if (topCategory.Name == currentCategory.Name) {
+					for (var i = 0; i < $scope.topCategories.length; i++) {
+						if ($scope.topCategories[i].Name == currentCategory.Name) {
 							isExistingCategory = true;
-							topCategory.Count = catrgoryInt;
+							$scope.topCategories[i].Count = catrgoryInt;
 						}
 					}
 					if (!isExistingLocation) {
