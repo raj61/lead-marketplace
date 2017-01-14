@@ -54,12 +54,12 @@ function create_edugorilla_lead_table()
 
 	$table_name4 = $wpdb->prefix . 'edugorilla_lead_client_mapping'; //Mapping between client id and lead id
 		$sql4 = "CREATE TABLE $table_name4 (
-																			 		 id int(15) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-																  		 		 client_id int(15) NOT NULL,
-																		       lead_id int(15) NOT NULL,
-						                               date_time datetime NOT NULL,
-																		       operation SMALLINT(1) NOT NULL DEFAULT '1'
-				  														  );";
+				                            id int(15) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+											client_id int(15) NOT NULL,
+											lead_id int(15) NOT NULL,
+						                    date_time datetime NOT NULL,
+									        operation SMALLINT(1) NOT NULL DEFAULT '1'
+				  					    ) $charset_collate;";
 
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	//Creating a table in cureent wordpress
@@ -138,14 +138,22 @@ function create_edugorilla_menus()
 		'edugorilla_lead_delete'
 	);
 
-
 	add_submenu_page(
 		'edugorilla',
-		'Lead Marketplace | Educash deals',
-		'Educash deals',
+		'Lead Marketplace | Allocate EduCash',
+		'Allocate EduCash',
 		'read',
-		'educash_deals_form_page',
-		'educash_deals_form_page'
+		'allocate_educash_form_page',
+		'allocate_educash_form_page'
+	);
+    
+    add_submenu_page(
+		'edugorilla',
+		'Lead Marketplace | Transaction History',
+		'Transaction History',
+		'read',
+		'transaction_history_form_page',
+		'transaction_history_form_page'
 	);
 
     add_submenu_page(
