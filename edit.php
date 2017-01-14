@@ -24,7 +24,7 @@ function edugorilla_lead_edit(){
         {
             	global $wpdb;
                 $result = $wpdb->update(
-                    $wpdb->prefix . 'edugorilla_lead',
+	                $wpdb->prefix . 'edugorilla_lead_details',
                     array(
                         'name' => $lead_name,
                     	'contact_no' => $lead_contact_no,
@@ -48,7 +48,7 @@ function edugorilla_lead_edit(){
     {
         	global $wpdb;
         	$iid = $_REQUEST['iid'];
-        	$q = "select * from {$wpdb->prefix}edugorilla_lead where id=$iid";
+	    $q = "select * from {$wpdb->prefix}edugorilla_lead_details where id=$iid";
             $leads_details = $wpdb->get_results($q, 'ARRAY_A');
 			foreach($leads_details as $leads_detail);
         	$lead_name = $leads_detail['name'];

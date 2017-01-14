@@ -317,7 +317,7 @@ function get_lead_details_from_db()
 	$cards_object = array();
 
 	global $wpdb;
-	$q = "select * from {$wpdb->prefix}edugorilla_lead";
+	$q = "select * from {$wpdb->prefix}edugorilla_lead_details";
 	$leads_details = $wpdb->get_results($q, 'ARRAY_A');
 	foreach ($leads_details as $leads_detail) {
 		$lead_id = $leads_detail['leadId'];
@@ -328,8 +328,8 @@ function get_lead_details_from_db()
 		$lead_category = $leads_detail['category_id'];
 		$lead_location = $leads_detail['location_id'];
 		$lead_date_time = $leads_detail['date_time'];
-		$lead_is_unlocked = $leads_detail['isUnlocked'];
-		$lead_is_hidden = $leads_detail['isHidden'];
+		$lead_is_unlocked = $leads_detail['is_unlocked'] ? true : false;
+		$lead_is_hidden = $leads_detail['is_hidden'] ? true : false;
 		$db_card = new Lead_Card($lead_id, $lead_name, $lead_email, $lead_contact_no, $lead_query, $lead_category, $lead_location, $lead_date_time, $lead_is_unlocked, $lead_is_hidden);
 		$cards_object[] = $db_card;
 	}

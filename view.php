@@ -3,7 +3,7 @@
     {
     	$iid = $_REQUEST['iid'];
     	global $wpdb;
-    	$q = "select * from {$wpdb->prefix}edugorilla_lead where id=$iid";
+	    $q = "select * from {$wpdb->prefix}edugorilla_lead_details where id=$iid";
     	$promotional_leads_views = $wpdb->get_results($q, 'ARRAY_A');
     	foreach($promotional_leads_views as $promotional_leads_view);
 ?>

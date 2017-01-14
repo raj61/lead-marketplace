@@ -13,7 +13,7 @@ function create_edugorilla_lead_table()
 {
 	global $wpdb;
 	$charset_collate = $wpdb->get_charset_collate();
-	$table_name1 = $wpdb->prefix . 'edugorilla_lead'; //Defining a table name.
+	$table_name1 = $wpdb->prefix . 'edugorilla_lead_details'; //The table containing all the leads.
 	$sql1 = "CREATE TABLE $table_name1 (
                                             id int(11) NOT NULL AUTO_INCREMENT,
                                             name varchar(200) NOT NULL,
@@ -23,11 +23,13 @@ function create_edugorilla_lead_table()
                                             category_id text(500) NOT NULL,
                                             location_id varchar(200) NOT NULL,
                                             date_time varchar(200) NOT NULL,
+                                            is_unlocked boolean DEFAULT 0 NOT NULL,
+                                            is_hidden boolean DEFAULT 0 NOT NULL,
                                             PRIMARY KEY id (id)
-                                        ) $charset_collate;"; //Defining query to create table.
+                                        ) $charset_collate;";
 
 
-	$table_name2 = $wpdb->prefix . 'edugorilla_lead_contact_log'; //Defining a table name.
+	$table_name2 = $wpdb->prefix . 'edugorilla_lead_contact_log'; //Logs when the leads were contacted.
 	$sql2 = "CREATE TABLE $table_name2 (
                                             id int(11) NOT NULL AUTO_INCREMENT,
                                             contact_log_id int(11) NOT NULL,
@@ -36,10 +38,10 @@ function create_edugorilla_lead_table()
                                             sms_status text NOT NULL,
                                             date_time varchar(200) NOT NULL,
                                             PRIMARY KEY id (id)
-                                        ) $charset_collate;"; //Defining query to create table.
+                                        ) $charset_collate;";
 
 
-	$table_name3 = $wpdb->prefix . 'educash_deals'; //Defining a table name.
+	$table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_tranaction'; //Transaction history for EduCash.
     $sql3 = "CREATE TABLE $table_name3 (
                                             id mediumint(9) NOT NULL AUTO_INCREMENT,
                                             admin_id int(9) NOT NULL,
@@ -48,9 +50,9 @@ function create_edugorilla_lead_table()
                                             time datetime NOT NULL,
                                             comments varchar(500) DEFAULT 'No comment' NOT NULL,
                                             PRIMARY KEY  (id)
-                                        ) $charset_collate;"; //Defining query to create table.
+                                        ) $charset_collate;";
 
-	$table_name4 = $wpdb->prefix . 'educash_transaction_history';
+	$table_name4 = $wpdb->prefix . 'edugorilla_lead_client_mapping'; //Mapping between client id and lead id
 		$sql4 = "CREATE TABLE $table_name4 (
 																			 		 id int(15) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 																  		 		 client_id int(15) NOT NULL,
@@ -206,7 +208,7 @@ function edugorilla()
 
 			global $wpdb;
 			$result1 = $wpdb->insert(
-				$wpdb->prefix . 'edugorilla_lead',
+				$wpdb->prefix . 'edugorilla_lead_details',
 				array(
 					'name' => $name,
 					'contact_no' => $contact_no,

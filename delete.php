@@ -9,14 +9,14 @@
     	$iid = $_REQUEST['iid'];
     	$pl_delete_form = $_REQUEST['pl_delete_form'];
     	global $wpdb;
-    	$q = "select * from {$wpdb->prefix}edugorilla_lead where id=$iid";
+	    $q = "select * from {$wpdb->prefix}edugorilla_lead_details where id=$iid";
     	$leads_datas = $wpdb->get_results($q, 'ARRAY_A');
     	foreach($leads_datas as $leads_data);
     	$lead_name = $leads_data['name'];
     
     	if($pl_delete_form == "self")
         {
-        	$wpdb->delete( $wpdb->prefix.'edugorilla_lead', array( 'id' => $iid ) );
+	        $wpdb->delete($wpdb->prefix . 'edugorilla_lead_details', array('id' => $iid));
         	wp_redirect(admin_url('admin.php?page=Listing', 'http')); 
         	exit;
         }

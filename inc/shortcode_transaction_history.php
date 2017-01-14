@@ -25,7 +25,7 @@
   <ul>
     <?php
       $current_user_id = get_current_user_id();
-      $table_name = $wpdb->prefix . 'educash_transaction_history';
+    $table_name = $wpdb->prefix . 'edugorilla_lead_client_mapping';
       $sql = "SELECT * FROM $table_name WHERE client_id = $current_user_id";
       $totalrows = $wpdb->get_results($sql);
       if(count($totalrows)>0){
