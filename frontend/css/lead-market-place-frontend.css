@@ -959,7 +959,12 @@ ul.refine a:hover,.see_more:hover{
 	font-size: smaller;
 }
 
-/*Transaction history shortcode by mayank joshi */
+
+/*****Transaction history
+				shortcode
+				by mayank joshi ***/
+
+
 *,
 *::before,
 *::after {
@@ -967,27 +972,33 @@ ul.refine a:hover,.see_more:hover{
   padding: 0;
   box-sizing: border-box;
 }
+
 .date{
-  margin-left: 25px;
+	font-size: 1.2rem;
+  margin-left: 10px;
 	color:	#676565;
 }
+
 .tl{
-  margin-left: 20px;
+	font-size: 1.2rem;
+  margin-left: 10px;
 	color:	#676565;
 }
-.timeline_class_shortcode {
-  font: normal 16px/1.5 "Helvetica Neue", sans-serif;
-  background: #303e49; /*bottom color*/
+
+.timeline_class {
+  font: bold 16px/1.5 "Helvetica Neue", sans-serif;
+  background: #e9f0f5; /*bottom color*/
   color:	#676565; /* text color */
-   text-shadow: 2px 2px 2px #e8e8e8;
+  text-shadow: 2px 2px 2px #e8e8e8;
   overflow-x: hidden;
-  padding-bottom: 50px;
+  padding-bottom: 10px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); /*shadowing the box*/
 }  /* INTRO SECTION
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 .intro_class {
   background: #303e49; /* head colour*/
-  padding: 80px 80px 80px 80px;
+  padding: 80px 60px 60px 60px;
 }
 
 .container_class {
@@ -1010,7 +1021,7 @@ ul.refine a:hover,.see_more:hover{
 
 .timeline ul {
   background: #e9f0f5;   /*complete timeline body color*/
-  padding: 50px 0;
+  padding: 40px 0;
 
 }
 
@@ -1041,6 +1052,7 @@ ul.refine a:hover,.see_more:hover{
   bottom: 0;
   width: 400px;
   padding: 15px;
+	padding-left: 80px;
   background:	#FFF; /*timeline content box color */
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); /*shadowing the box*/
 }
@@ -1088,15 +1100,15 @@ time {
 }
 
 
-/* EFFECTS *****(to be modified later) ****
+/* EFFECTS *****(to be modified later) ****/
 ––––––––––––––––––––––––––––––––––––––––––––––––––
-
+/*
 .timeline ul li::after {
   transition: background .5s ease-in-out;
 }
 
 .timeline ul li.in-view::after {
-  background: #D2D6E7; /*round circles on vertical line
+  background: #D2D6E7;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 6px 0 rgba(0, 0, 0, 0.19);
 }
 
