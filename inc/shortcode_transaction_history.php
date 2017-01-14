@@ -53,7 +53,6 @@
   <ul>
     <?php
 
-
       if(count($totalrows)>0){
         foreach($totalrows as $row){
           $new_time = explode(" ",$row->date_time);

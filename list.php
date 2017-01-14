@@ -23,7 +23,7 @@ function form_list()
 //end of Promotion send listing
 
 //Leads Listing
-	$lead_table = $wpdb->prefix .'edugorilla_lead';
+    $lead_table = $wpdb->prefix . 'edugorilla_lead_details';
     $leads_query = $wpdb->get_results("SELECT * FROM $lead_table");
     $total_rows = count($leads_query); //counting total rows
     $lead_current_page = $_REQUEST['lead_current_page'];
@@ -219,7 +219,7 @@ function form_list()
                     </tfoot>
                     <tbody>
                     <?php
-						$q1 = "select * from {$wpdb->prefix}edugorilla_lead order by id desc limit $lead_index, $page_size";
+                    $q1 = "select * from {$wpdb->prefix}edugorilla_lead_details order by id desc limit $lead_index, $page_size";
                     	$leads_details = $wpdb->get_results($q1, 'ARRAY_A');
 						foreach($leads_details as $leads_detail)
                         {
@@ -303,7 +303,7 @@ function edugorilla_view_leads()
 
 	if(!empty($promotion_id))
     {
-    $q1 = "select * from {$wpdb->prefix}edugorilla_lead where id=$promotion_id ";
+        $q1 = "select * from {$wpdb->prefix}edugorilla_lead_details where id=$promotion_id ";
 $leads_details = $wpdb->get_results($q1, 'ARRAY_A');
 $temp_data = array();
 foreach($leads_details as $leads_detail)

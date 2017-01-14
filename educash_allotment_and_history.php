@@ -2,7 +2,7 @@
 function educash_deals_form_page()
 {
     global $wpdb;
-    $table_name3 = $wpdb->prefix . 'educash_deals';
+	$table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_tranaction';
     $users_table = $wpdb->prefix.users;
 
 //Checking if the admin has filled adequate information to submit the form to allot educash and inserting the legal values in table
