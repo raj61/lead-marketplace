@@ -41,7 +41,7 @@ function create_edugorilla_lead_table()
                                         ) $charset_collate;";
 
 
-	$table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_tranaction'; //Transaction history for EduCash.
+	$table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_transactions'; //Transaction history for EduCash.
     $sql3 = "CREATE TABLE $table_name3 (
                                             id mediumint(9) NOT NULL AUTO_INCREMENT,
                                             admin_id int(9) NOT NULL,
