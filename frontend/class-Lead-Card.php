@@ -8,7 +8,7 @@ class Lead_Card implements JsonSerializable
 
 	function __construct($id, $name, $contact_no, $email, $query, $category, $location, $date_time, $isUnlocked = false, $isHidden = false)
 	{
-		$this->create_card($id, $name, $contact_no, $email, $query, $category, $location, $date_time, $isUnlocked, $isHidden);
+		$this->create_card($id, $name, $contact_no, $email, $query, $category, $location, $date_time, $isUnlocked ? true : false, $isHidden ? true : false);
 	}
 
 	public function isHidden()

@@ -23,8 +23,6 @@ function create_edugorilla_lead_table()
                                             category_id text(500) NOT NULL,
                                             location_id varchar(200) NOT NULL,
                                             date_time varchar(200) NOT NULL,
-                                            is_unlocked boolean DEFAULT 0 NOT NULL,
-                                            is_hidden boolean DEFAULT 0 NOT NULL,
                                             PRIMARY KEY id (id)
                                         ) $charset_collate;";
 
@@ -57,6 +55,8 @@ function create_edugorilla_lead_table()
 				                            id int(15) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 											client_id int(15) NOT NULL,
 											lead_id int(15) NOT NULL,
+											is_unlocked boolean DEFAULT 0 NOT NULL,
+                                            is_hidden boolean DEFAULT 0 NOT NULL,
 						                    date_time datetime NOT NULL,
 									        operation SMALLINT(1) NOT NULL DEFAULT '1'
 				  					    ) $charset_collate;";

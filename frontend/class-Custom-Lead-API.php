@@ -61,6 +61,44 @@ class Custom_Lead_API extends WP_REST_Controller
 			'methods' => WP_REST_Server::READABLE,
 			'callback' => array($this, 'get_lead_details'),
 		));
+		register_rest_route($namespace, '/' . $base . '/sethidden', array(
+			'methods' => WP_REST_Server::EDITABLE,
+			'callback' => array($this, 'persist_hidden_status'),
+			'args' => $this->get_endpoint_args_for_item_schema(true),
+		));
+		register_rest_route($namespace, '/' . $base . '/setunlock', array(
+			'methods' => WP_REST_Server::EDITABLE,
+			'callback' => array($this, 'persist_hidden_status'),
+			'args' => $this->get_endpoint_args_for_item_schema(true),
+		));
+	}
+
+	/**
+	 * Persist unlock status to the database
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function persist_unlock_status($request)
+	{
+		$lead_id = $request->get_param('lead_id');
+		$unlock_status = $request->get_param('unlock_status');
+		$userId = wp_get_current_user()->ID;
+		set_card_unlock_status_to_db($userId, $lead_id, $unlock_status);
+	}
+
+	/**
+	 * Persist hidden status to the database
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function persist_hidden_status($request)
+	{
+		$lead_id = $request->get_param('lead_id');
+		$hidden_status = $request->get_param('hidden_status');
+		$userId = wp_get_current_user()->ID;
+		set_card_hidden_status_to_db($userId, $lead_id, $hidden_status);
 	}
 
 	/**
@@ -317,10 +355,10 @@ function get_lead_details_from_db()
 	$cards_object = array();
 
 	global $wpdb;
-	$q = "select * from {$wpdb->prefix}edugorilla_lead_details";
-	$leads_details = $wpdb->get_results($q, 'ARRAY_A');
+	$detail_query = "select * from {$wpdb->prefix}edugorilla_lead_details";
+	$leads_details = $wpdb->get_results($detail_query, 'ARRAY_A');
 	foreach ($leads_details as $leads_detail) {
-		$lead_id = $leads_detail['leadId'];
+		$lead_id = $leads_detail['id'];
 		$lead_name = $leads_detail['name'];
 		$lead_email = $leads_detail['contact_no'];
 		$lead_contact_no = $leads_detail['email'];
@@ -328,11 +366,35 @@ function get_lead_details_from_db()
 		$lead_category = $leads_detail['category_id'];
 		$lead_location = $leads_detail['location_id'];
 		$lead_date_time = $leads_detail['date_time'];
-		$lead_is_unlocked = $leads_detail['is_unlocked'] ? true : false;
-		$lead_is_hidden = $leads_detail['is_hidden'] ? true : false;
+		$mapping_query = "select * from {$wpdb->prefix}edugorilla_lead_client_mapping WHERE lead_id=$lead_id";
+		$leads_mapping_details = $wpdb->get_results($mapping_query, 'ARRAY_A');
+		$lead_is_unlocked = false;
+		$lead_is_hidden = false;
+		foreach ($leads_mapping_details as $leads_mapping_detail) {
+			$lead_is_unlocked = $leads_mapping_detail['is_unlocked'];
+			$lead_is_hidden = $leads_mapping_detail['is_hidden'];
+		}
 		$db_card = new Lead_Card($lead_id, $lead_name, $lead_email, $lead_contact_no, $lead_query, $lead_category, $lead_location, $lead_date_time, $lead_is_unlocked, $lead_is_hidden);
 		$cards_object[] = $db_card;
 	}
 
 	return $cards_object;
+}
+
+function set_card_hidden_status_to_db($client_id, $lead_id, $hidden_status)
+{
+	global $wpdb;
+	$lead_table = $wpdb->prefix . 'edugorilla_lead_client_mapping';
+	$hidden_status = $hidden_status ? '1' : '0';
+	$update_query = "UPDATE $lead_table SET is_hidden = '$hidden_status' WHERE $lead_table.lead_id = $lead_id AND $lead_table.client_id = $client_id";
+	$wpdb->get_results($update_query);
+}
+
+function set_card_unlock_status_to_db($client_id, $lead_id, $unlock_status)
+{
+	global $wpdb;
+	$lead_table = $wpdb->prefix . 'edugorilla_lead_client_mapping';
+	$unlock_status = $unlock_status ? '1' : '0';
+	$update_query = "UPDATE $lead_table SET is_unlocked = '$unlock_status' WHERE $lead_table.lead_id = $lead_id AND $lead_table.client_id = $client_id";
+	$wpdb->get_results($update_query);
 }

@@ -12,10 +12,10 @@
 				if ($scope.user_purchased && !card.isUnlocked) {
 					return false;
 				}
-				if($scope.userSelectedLocations!=0 && !($scope.containsInArray($scope.userSelectedLocations,card.Location))) {
+				if ($scope.userSelectedLocations != 0 && !($scope.containsInArray($scope.userSelectedLocations, card.location))) {
 					return false;
 				}
-				if($scope.userSelectedCategories!=0 && !($scope.containsInArray($scope.userSelectedCategories,card.Category))) {
+				if ($scope.userSelectedCategories != 0 && !($scope.containsInArray($scope.userSelectedCategories, card.category))) {
 					return false;
 				}
 				return true;
@@ -31,24 +31,41 @@
 			$scope.userSelectedLocations = [];
 			$scope.userSelectedCategories = [];
 			$scope.setSelectedCategories = function(prop){
-				if (!($scope.containsInArray($scope.userSelectedCategories, prop.name))) {
-					$scope.userSelectedCategories.push(prop.name);
+				if (!($scope.containsInArray($scope.userSelectedCategories, prop.Name))) {
+					$scope.userSelectedCategories.push(prop.Name);
 				}else{
-					removeItemFromArray($scope.userSelectedCategories, prop.name);
+					removeItemFromArray($scope.userSelectedCategories, prop.Name);
 				}
 			};
 			$scope.setSelectedLocations = function(prop){
-				if (!($scope.containsInArray($scope.userSelectedLocations, prop.name))) {
-					$scope.userSelectedLocations.push(prop.name);
+				if (!($scope.containsInArray($scope.userSelectedLocations, prop.Name))) {
+					$scope.userSelectedLocations.push(prop.Name);
 				}else {
-					removeItemFromArray($scope.userSelectedLocations, prop.name);
+					removeItemFromArray($scope.userSelectedLocations, prop.Name);
 				}
 			};
 			$scope.toggle_card_hidden = function (card) {
+				//$http({
+				//	method: 'POST',
+				//	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				//	url: '/wp-json/marketplace/v1/leads/sethidden',
+				//	data:'true',
+				//	cache: true
+				//}).success(function (data, status, headers, config) {
 				card.isHidden = !card.isHidden;
+				//	})
+				//	.error(function (data, status, header, config) {
+				//		alert("Unable to set the hidden status.");
+				//	});
 			};
 			$scope.unlock_card_if_possible = function (card) {
-				card.isUnlocked = !card.isUnlocked;
+				//var eduCashBalance = getCurrentEduCashBalance();
+				//var costForUnlock = 1;
+				//if(eduCashBalance>=costForUnlock) {
+				//setEduCashBalance(eduCashBalance-costForUnlock);
+				card.isUnlocked = true;
+				//setCardUnlockedStatusInDb(card.isUnlocked);
+				//}
 			};
 			$scope.cards = [];
 			$scope.topLocations = [];
@@ -114,3 +131,14 @@
 		}]);
 })(window.angular);
 
+/**
+ * Generic function to remove an item from the given array.
+ *
+ * @param {Array} array the original array with all items
+ * @param {any} item the time you want to remove
+ * @returns {Array} a new Array without the item
+ */
+var removeItemFromArray = function (arr, item) {
+	var i = arr.length;
+	while (i--) if (arr[i] === item) arr.splice(i, 1);
+}
