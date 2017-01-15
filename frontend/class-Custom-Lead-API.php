@@ -336,3 +336,15 @@ function get_lead_details_from_db()
 
 	return $cards_object;
 }
+
+/**
+ * Get details of all the leads table from database
+ *
+ */
+function set_card_unlock_status_to_db($card)
+{
+	global $wpdb;
+	$lead_table = $wpdb->prefix . 'edugorilla_lead_details';
+	$q = "UPDATE $lead_table SET `is_hidden` = '1' WHERE $lead_table.`id` = $card.id;";
+	//Use ORM tool here instead.
+}
