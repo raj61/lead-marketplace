@@ -1052,8 +1052,9 @@ ul.refine a:hover,.see_more:hover{
   bottom: 0;
   width: 400px;
   padding: 15px;
-	padding-left: 80px;
+	padding-left: 12px;
   background:	#FFF; /*timeline content box color */
+	text-align: center;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); /*shadowing the box*/
 }
 
@@ -1090,7 +1091,6 @@ time {
   display: block;
   font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 8px;
 	color:	#676565;
 }
 
