@@ -973,15 +973,9 @@ ul.refine a:hover,.see_more:hover{
   box-sizing: border-box;
 }
 
-.date{
-	font-size: 1.2rem;
-  margin-left: 10px;
-	color:	#676565;
-}
-
 .tl{
-	font-size: 1.2rem;
-  margin-left: 10px;
+	font-size: 0.9rem;
+  margin-left: 8px;
 	color:	#676565;
 }
 
@@ -1089,7 +1083,7 @@ ul.refine a:hover,.see_more:hover{
 
 time {
   display: block;
-  font-size: 1.2rem;
+  font-size: 1.0rem;
   font-weight: bold;
 	color:	#676565;
 }
