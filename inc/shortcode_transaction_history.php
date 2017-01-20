@@ -106,6 +106,6 @@
 <?php }
     else{
         $redirecting_url = home_url("/login");
-      echo '<script>location.href="'.$redirecting_url.'";</script>';
+        echo '<script>location.href="'.$redirecting_url.'";</script>';
     }
   } ?>
