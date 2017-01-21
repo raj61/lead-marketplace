@@ -68,7 +68,7 @@ class Custom_Lead_API extends WP_REST_Controller
 		));
 		register_rest_route($namespace, '/' . $base . '/setunlock', array(
 			'methods' => WP_REST_Server::EDITABLE,
-			'callback' => array($this, 'persist_hidden_status'),
+			'callback' => array($this, 'persist_unlock_status'),
 			'args' => $this->get_endpoint_args_for_item_schema(true),
 		));
 	}
@@ -85,6 +85,11 @@ class Custom_Lead_API extends WP_REST_Controller
 		$unlock_status = $request->get_param('unlock_status');
 		$userId = wp_get_current_user()->ID;
 		set_card_unlock_status_to_db($userId, $lead_id, $unlock_status);
+
+		$data_object = array();
+		$data_object[] = "Successfully updated unlock_status to the database";
+		$response = new WP_REST_Response($data_object);
+		return $response;
 	}
 
 	/**
@@ -101,7 +106,7 @@ class Custom_Lead_API extends WP_REST_Controller
 		set_card_hidden_status_to_db($userId, $lead_id, $hidden_status);
 
 		$data_object = array();
-		$data_object[] = "Successfully updated the database";
+		$data_object[] = "Successfully updated hidden_status to the database";
 		$response = new WP_REST_Response($data_object);
 		return $response;
 	}
@@ -392,14 +397,21 @@ function set_card_hidden_status_to_db($client_id, $lead_id, $hidden_status)
 	$lead_table = $wpdb->prefix . 'edugorilla_lead_client_mapping';
 	$hidden_status = $hidden_status ? '1' : '0';
 	$update_query = "UPDATE $lead_table SET is_hidden = '$hidden_status' WHERE $lead_table.lead_id = $lead_id AND $lead_table.client_id = $client_id";
-	$wpdb->get_results($update_query);
+	$hidden_status_update_result = $wpdb->get_results($update_query);
+	echo "$hidden_status_update_result";
 }
 
 function set_card_unlock_status_to_db($client_id, $lead_id, $unlock_status)
 {
 	global $wpdb;
 	$lead_table = $wpdb->prefix . 'edugorilla_lead_client_mapping';
+	$educash_table = $wpdb->prefix . 'edugorilla_educash_client_mapping';
 	$unlock_status = $unlock_status ? '1' : '0';
+	if ($unlock_status == '1') {
+		//Check in EduCash table and update here :
+		//$update_educash_query = "UPDATE $educash_table SET is_unlocked = '$unlock_status' WHERE $lead_table.lead_id = $lead_id AND $lead_table.client_id = $client_id";
+		//$wpdb->get_results($update_educash_query);
+	}
 	$update_query = "UPDATE $lead_table SET is_unlocked = '$unlock_status' WHERE $lead_table.lead_id = $lead_id AND $lead_table.client_id = $client_id";
 	$wpdb->get_results($update_query);
 }

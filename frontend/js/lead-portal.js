@@ -65,13 +65,24 @@
 					});
 			};
 			$scope.unlock_card_if_possible = function (card) {
-				//var eduCashBalance = getCurrentEduCashBalance();
-				//var costForUnlock = 1;
-				//if(eduCashBalance>=costForUnlock) {
-				//setEduCashBalance(eduCashBalance-costForUnlock);
-				card.isUnlocked = true;
-				//setCardUnlockedStatusInDb(card.isUnlocked);
-				//}
+				$http({
+					method: 'POST',
+					url: '/wp-json/marketplace/v1/leads/setunlock',
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+					transformRequest: function (obj) {
+						var str = [];
+						for (var p in obj)
+							str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+						return str.join("&");
+					},
+					data: {lead_id: card.leadId, unlock_status: card.isUnlocked},
+					cache: true
+				}).success(function (data, status, headers, config) {
+					card.isUnlocked = !card.isUnlocked;
+				})
+					.error(function (data, status, header, config) {
+						alert("Unable to set the Unlock status.");
+					});
 			};
 			$scope.cards = [];
 			$scope.topLocations = [];

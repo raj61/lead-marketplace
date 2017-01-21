@@ -61,12 +61,21 @@ function create_edugorilla_lead_table()
 									        operation SMALLINT(1) NOT NULL DEFAULT '1'
 				  					    ) $charset_collate;";
 
+	$table_name5 = $wpdb->prefix . 'edugorilla_educash_client_mapping'; //Mapping between client id and educash allocated to the client
+	$sql5 = "CREATE TABLE $table_name5 (
+				                            id int(15) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+											client_id int(15) NOT NULL,
+											edu_cash int(15) NOT NULL,
+									        PRIMARY KEY  (id)
+				  					    ) $charset_collate;";
+
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	//Creating a table in cureent wordpress
 	dbDelta($sql1);
 	dbDelta($sql2);
 	dbDelta($sql3);
 	dbDelta($sql4);
+	dbDelta($sql5);
 
 }
 
