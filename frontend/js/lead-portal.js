@@ -45,18 +45,24 @@
 				}
 			};
 			$scope.toggle_card_hidden = function (card) {
-				//$http({
-				//	method: 'POST',
-				//	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-				//	url: '/wp-json/marketplace/v1/leads/sethidden',
-				//	data:'true',
-				//	cache: true
-				//}).success(function (data, status, headers, config) {
-				card.isHidden = !card.isHidden;
-				//	})
-				//	.error(function (data, status, header, config) {
-				//		alert("Unable to set the hidden status.");
-				//	});
+				$http({
+					method: 'POST',
+					url: '/wp-json/marketplace/v1/leads/sethidden',
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+					transformRequest: function (obj) {
+						var str = [];
+						for (var p in obj)
+							str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+						return str.join("&");
+					},
+					data: {lead_id: card.leadId, hidden_status: card.isHidden},
+					cache: true
+				}).success(function (data, status, headers, config) {
+					card.isHidden = !card.isHidden;
+				})
+					.error(function (data, status, header, config) {
+						alert("Unable to set the hidden status.");
+					});
 			};
 			$scope.unlock_card_if_possible = function (card) {
 				//var eduCashBalance = getCurrentEduCashBalance();

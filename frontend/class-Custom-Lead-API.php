@@ -99,6 +99,11 @@ class Custom_Lead_API extends WP_REST_Controller
 		$hidden_status = $request->get_param('hidden_status');
 		$userId = wp_get_current_user()->ID;
 		set_card_hidden_status_to_db($userId, $lead_id, $hidden_status);
+
+		$data_object = array();
+		$data_object[] = "Successfully updated the database";
+		$response = new WP_REST_Response($data_object);
+		return $response;
 	}
 
 	/**
