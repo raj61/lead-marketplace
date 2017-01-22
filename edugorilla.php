@@ -128,6 +128,15 @@ function create_edugorilla_menus()
 		'edugorilla-email-setting',
 		'edugorilla_email_setting'
 	);
+	
+	add_submenu_page(
+		'edugorilla',
+		'Lead Marketplace | Template of SMS',
+		'Template of SMS',
+		'read',
+		'edugorilla-sms-setting',
+		'edugorilla_sms_setting'
+	);
 
 	add_submenu_page(
 		'',
@@ -178,6 +187,7 @@ function create_edugorilla_menus()
 include_once plugin_dir_path(__FILE__) . "view.php";
 include_once plugin_dir_path(__FILE__) . "edit.php";
 include_once plugin_dir_path(__FILE__) . "otp.php";
+include_once plugin_dir_path(__FILE__) . "sms_setting.php";
 include_once plugin_dir_path(__FILE__) . "educash_allotment_and_history.php";
 
 function edugorilla()
@@ -212,6 +222,7 @@ function edugorilla()
 
 		if (empty($errors)) {
 			$institute_emails_status = array();
+			$institute_sms_status = array();
 
 			if (!empty($category_id)) $category = implode(",", $category_id);
 			else $category = "";
@@ -269,7 +280,6 @@ function edugorilla()
 						$edugorilla_email_body = str_replace($var, $email_template_data, $edugorilla_email_body);
 					}
 
-
 					$institute_emails = explode(",", $json_result->emails);
 					foreach ($institute_emails as $institute_email) {
 						add_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type');
@@ -278,6 +288,15 @@ function edugorilla()
 							$institute_emails_status[$institute_email] = wp_mail($institute_email, $edugorilla_email_subject, ucwords($edugorilla_email_body));
 
 						remove_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type');
+						
+					}
+					
+					$institute_phones = explode(",", $json_result->phones);
+					include_once plugin_dir_path(__FILE__) . "api/ghupshup.api.php";
+					foreach ($institute_phones as $institute_phone) {
+						$smsapi = get_option("smsapi");
+						$msg = str_replace("{Contact_Person}", $json_result->contact_person, $smsapi['message']);
+						$institute_sms_status[$institute_phone] = send_sms($smsapi['username'],$smsapi['password'],$institute_phone,$msg);
 					}
 
 					$contact_log_id = $wpdb->insert_id;
@@ -288,6 +307,7 @@ function edugorilla()
 							'contact_log_id' => $contact_log_id,
 							'post_id' => $json_result->post_id,
 							'email_status' => json_encode($institute_emails_status),
+							'sms_status' => json_encode($institute_sms_status),
 							'date_time' => current_time('mysql')
 						)
 					);

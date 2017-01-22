@@ -10,10 +10,9 @@ function edugorilla_otp()
         	include_once plugin_dir_path(__FILE__) . "api/gupshup.api.php";
         	$otp = rand(1000,9999);
         	$msg = "Your OTP is".$otp.".";
-        	$credentials = get_option("ghupshup_credentials");
-        	$response = send_sms($credentials['user_id'],$credentials['password'],$edugorilla_mno,$msg);
+        	$credentials = get_option("smsapi");
+        	$response = send_sms($credentials['username'],$credentials['password'],$edugorilla_mno,$msg);
       
-        	list($response, $response_code,$response_msg) = explode("|",$response);
         	$response = trim($response);
         	
         	if($response != "error") $success = "<div class='notice notice-success is-dismissible'><p>OTP $otp has been sent successfully. </p></div>";
