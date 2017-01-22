@@ -18,7 +18,7 @@ function send_sms($user_id,$pwd,$mobile_no, $msg)
 		//we have to urlencode the values
 		$request.= "&";
 		//append the ampersand (&) sign after each
-		parameter/value pair
+		//parameter/value pair
 	}
 
 	$request = substr($request, 0, strlen($request)-1);
