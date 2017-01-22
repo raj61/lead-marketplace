@@ -8,6 +8,8 @@
  **/
 require_once(plugin_dir_path(__FILE__) . 'frontend/class-Lead-Card.php'); /*Cards used for displaying leads */
 require_once(plugin_dir_path(__FILE__) . 'frontend/class-Custom-Lead-API.php'); /*API to be used for displaying leads */
+require_once(plugin_dir_path(__FILE__) . 'frontend/class-EduCash-Helper.php'); /*Utility class used for dealing with EduCash */
+require_once(plugin_dir_path(__FILE__) . 'database/class-DataBase-Helper.php'); /*Utility class used for dealing with Database */
 
 function create_edugorilla_lead_table()
 {
@@ -61,11 +63,12 @@ function create_edugorilla_lead_table()
 									        operation SMALLINT(1) NOT NULL DEFAULT '1'
 				  					    ) $charset_collate;";
 
-	$table_name5 = $wpdb->prefix . 'edugorilla_educash_client_mapping'; //Mapping between client id and educash allocated to the client
+	$table_name5 = $wpdb->prefix . 'edugorilla_educash_conversion_ratio'; //Mapping between educash and other currencies
 	$sql5 = "CREATE TABLE $table_name5 (
 				                            id int(15) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-											client_id int(15) NOT NULL,
-											edu_cash int(15) NOT NULL,
+											edu_cash double NOT NULL,
+											karma double NOT NULL,
+											rupees double NOT NULL,
 									        PRIMARY KEY  (id)
 				  					    ) $charset_collate;";
 

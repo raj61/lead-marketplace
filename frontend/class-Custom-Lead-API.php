@@ -84,12 +84,7 @@ class Custom_Lead_API extends WP_REST_Controller
 		$lead_id = $request->get_param('lead_id');
 		$unlock_status = $request->get_param('unlock_status');
 		$userId = wp_get_current_user()->ID;
-		set_card_unlock_status_to_db($userId, $lead_id, $unlock_status);
-
-		$data_object = array();
-		$data_object[] = "Successfully updated unlock_status to the database";
-		$response = new WP_REST_Response($data_object);
-		return $response;
+		return set_card_unlock_status_to_db($userId, $lead_id, $unlock_status);
 	}
 
 	/**
@@ -405,13 +400,22 @@ function set_card_unlock_status_to_db($client_id, $lead_id, $unlock_status)
 {
 	global $wpdb;
 	$lead_table = $wpdb->prefix . 'edugorilla_lead_client_mapping';
-	$educash_table = $wpdb->prefix . 'edugorilla_educash_client_mapping';
 	$unlock_status = $unlock_status ? '1' : '0';
 	if ($unlock_status == '1') {
-		//Check in EduCash table and update here :
-		//$update_educash_query = "UPDATE $educash_table SET is_unlocked = '$unlock_status' WHERE $lead_table.lead_id = $lead_id AND $lead_table.client_id = $client_id";
-		//$wpdb->get_results($update_educash_query);
+		$eduCashHelper = new EduCash_Helper();
+		$eduCashCostForLead = 1;
+		$query_status = $eduCashHelper->removeEduCashFromUser($client_id, $eduCashCostForLead);
+		if ($query_status != "Success") {
+			return new WP_Error('EduCashError', $query_status);;
+		}
 	}
 	$update_query = "UPDATE $lead_table SET is_unlocked = '$unlock_status' WHERE $lead_table.lead_id = $lead_id AND $lead_table.client_id = $client_id";
 	$wpdb->get_results($update_query);
+
+	$data_object = array();
+	$data_object[] = "Successfully updated unlock_status to the database";
+	$response = new WP_REST_Response($data_object);
+	return $response;
 }
+
+?>

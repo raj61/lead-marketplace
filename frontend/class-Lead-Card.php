@@ -156,3 +156,4 @@ $shrt_code1 = new Lead_Card('Rohit', 'Lucknow', 'CEO', 'Nirvana', '', '', '', ''
 add_shortcode('edugorilla_leads', array($shrt_code1, 'edu_shortcode'));
 
 
+?>
