@@ -15,7 +15,7 @@ class DataBase_Helper
 			'client_id' => $client_id,
 			'transaction' => $educash,
 			'comments' => $adminComment
-		), array('%s, %s'));
+		));
 		return $insert_status;
 	}
 
@@ -51,7 +51,7 @@ class DataBase_Helper
 		$current_educash = 0;
 		$current_user_id = get_current_user_id();
 
-		$transaction_table = $wpdb->prefix . 'edugorilla_lead_educash_tranaction';
+		$transaction_table = $wpdb->prefix . 'edugorilla_lead_educash_transactions';
 		$sql = "SELECT * FROM $transaction_table WHERE client_id = $current_user_id";
 		$total_cash = $wpdb->get_results($sql);
 		$i = 0;
