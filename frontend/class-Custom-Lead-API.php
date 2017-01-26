@@ -401,21 +401,33 @@ function set_card_unlock_status_to_db($client_id, $lead_id, $unlock_status)
 	global $wpdb;
 	$lead_table = $wpdb->prefix . 'edugorilla_lead_client_mapping';
 	$unlock_status = $unlock_status ? '1' : '0';
+	$result_status_string = "";
 	if ($unlock_status == '1') {
 		$eduCashHelper = new EduCash_Helper();
 		$eduCashCostForLead = 1;
 		$query_status = $eduCashHelper->removeEduCashFromUser($client_id, $eduCashCostForLead);
-		if ($query_status != "Success") {
+		if (!str_starts_with($query_status, "Success")) {
 			return new WP_Error('EduCashError', $query_status);;
 		}
+		$result_status_string = $query_status;
 	}
 	$update_query = "UPDATE $lead_table SET is_unlocked = '$unlock_status' WHERE $lead_table.lead_id = $lead_id AND $lead_table.client_id = $client_id";
 	$wpdb->get_results($update_query);
 
 	$data_object = array();
-	$data_object[] = "Successfully updated unlock_status to the database";
+	$data_object[] = "Successfully updated unlock_status to the database : $result_status_string";
 	$response = new WP_REST_Response($data_object);
 	return $response;
+}
+
+function str_starts_with($haystack, $needle)
+{
+	return substr_compare($haystack, $needle, 0, strlen($needle)) === 0;
+}
+
+function str_ends_with($haystack, $needle)
+{
+	return substr_compare($haystack, $needle, -strlen($needle)) === 0;
 }
 
 ?>

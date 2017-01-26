@@ -5,8 +5,7 @@ require_once(explode("wp-content", __FILE__)[0] . "wp-load.php");
 
 class EduCash_Helper
 {
-	private $eduCashMetaDataKey = 'edu_cash_amount';
-
+	private $educash_lead_cost = 1;
 	public function addEduCashToCurrentUser($amount)
 	{
 		$userId = wp_get_current_user()->ID;
@@ -32,26 +31,15 @@ class EduCash_Helper
 
 	public function removeEduCashFromUser($user_id, $amount)
 	{
-		$eduCashValue = get_user_meta($user_id, $key = $this->eduCashMetaDataKey, $single = true);
-		if (!$eduCashValue) {
-			//Initially everyone gets 10 eduCash
-			$eduCashValue = 10;
-			$meta_id = add_user_meta($user_id, $this->eduCashMetaDataKey, $eduCashValue);
-			if ($meta_id == false) {
-				return "Unable to Create EduCash Meta Tag";
-			}
-		}
-		$newEduCashValue = $eduCashValue - $amount;
-		if ($newEduCashValue < 0) {
-			return "Not Enough Funds";
-		}
 		$databaseHelper = new DataBase_Helper();
-		$databaseHelper->add_educash_transaction($user_id, $newEduCashValue, "Unlocked a lead");
-		$update_status = update_user_meta($user_id, $this->eduCashMetaDataKey, $newEduCashValue, $eduCashValue);
-		if ($update_status != true) {
-			return "Unable to update EduCash Meta Tag";
+		$currentEduCashValue = $databaseHelper->get_educash_for_user($user_id);
+		$newEduCashValue = $currentEduCashValue - $this->educash_lead_cost;
+		$transaction_cost = -$this->educash_lead_cost;
+		if ($newEduCashValue > 0) {
+			$insertion_status = $databaseHelper->add_educash_transaction($user_id, $transaction_cost, "Unlocked a lead");
+			return "Success : $insertion_status";
 		}
-		return "Success";
+		return "Insufficient Funds";
 	}
 
 	public function getEduCashForUser($userId)
