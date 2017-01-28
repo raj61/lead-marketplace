@@ -27,6 +27,7 @@ function allocate_educash_form_page()
             $total = $wpdb->get_var("SELECT sum(transaction) FROM $table_name3 WHERE client_id = '$client_ID_result' ");
             $final_total = $total + $educash;
             if($final_total>=0){
+            $money = $_POST['money'];
             $adminName = wp_get_current_user();
             $client_ID = $wpdb->get_var("SELECT ID from $users_table WHERE user_email = '$clientName' ");
             $adminComment = $_POST['adminComment'];
@@ -36,6 +37,7 @@ function allocate_educash_form_page()
                 'admin_id' => $adminName->ID,
                 'client_id' => $client_ID,
                 'transaction' => $educash,
+                'amount' => $money,
                 'comments' => $adminComment
             ));
            }
@@ -47,6 +49,7 @@ function allocate_educash_form_page()
     function validate_allotment_form() {
     var x = document.forms["myForm"]["clientName"].value;
     var y = document.forms["myForm"]["educash"].value;
+    var z = document.forms["myForm"]["money"].value; 
     if (x == "" && (y == "" || y == 0)) {
         document.getElementById('errmsg1').innerHTML = "* This field cannot be blank";
         document.getElementById('errmsg2').innerHTML = "* This field cannot be blank or 0";
@@ -60,6 +63,9 @@ function allocate_educash_form_page()
         document.getElementById('errmsg2').innerHTML = "* This field cannot be blank or 0";
         return false;
     }
+    if(z < 0) {
+        document.getElementById('errmsg3').innerHTML = "* This field cannot be negative";
+    }
     else {return confirm('Do you really want to submit this entry?');}
 }
 </script>
@@ -72,6 +78,10 @@ function allocate_educash_form_page()
              Type the educash to be added in the client's account:<br/><input type='number' id='input2' name='educash' min='-100000000' max='100000000'>*<br/>
                                                                        <span style='color:red;' id='errmsg2'></span>
                                                                        <span><?php echo $educasherr;?> </span>
+                                                                       <br/><br/>
+             Type the amount of money that the client has paid:<br/><input type='number' id='input3' name='money' min='-100000000' max='100000000'>*<br/>
+                                                                       <span style='color:red;' id='errmsg3'></span>
+                                                                       <span><?php echo $moneyerr;?> </span>
                                                                        <br/><br/>
              Type your comments here (optional):<br/><textarea rows='4' cols='60' name='adminComment' maxlength='500'></textarea><br/><br/>
              <input type='submit' name='submit'><br/>
@@ -97,13 +107,57 @@ function allocate_educash_form_page()
         $edugorilla_email_datas2 = get_option('edugorilla_email_setting3');
         $arr1 = array("{Contact_Person}", "{ReceivedCount}", "{EduCashCount}", "{EduCashUrl}", "<pre>", "</pre>", "<code>", "</code>", "<b>", "</b>");
         $to = $clientName;
-        $attachment = array(WP_CONTENT_DIR . '/uploads/2017/01/INV-1821.1.pdf');
         if($educash>0){
         $positive_email_subject = $edugorilla_email_datas['subject'];
         $subject =  $positive_email_subject;
         $arr2 = array($client_display_name, $educash, $sum, "https://edugorilla.com/", "", "", "", "", "", "");
         $positive_email_body = str_replace($arr1, $arr2, $edugorilla_email_datas['body']);
         $message =  $positive_email_body;
+            
+//Creating invoice
+            
+        require('pdf_library/invoice_functions.php');
+        $pdf = new PDF_Invoice( 'P', 'mm', 'A4' );                                 
+        $pdf->AddPage();
+        $pdf->Image("https://electronicsguide.000webhostapp.com/wp-content/uploads/2017/01/eg_logo.jpg",10,10,53.898305,60);
+        $pdf->right_blocks(70, 25, 20, "EduGorilla");
+        $pdf->addCompanyAddress("House No. 4719/A,\n".
+                                "Sector 23A,\n" .
+                                "Gurgaon - 122002,\n".
+                                "India.\n" .
+                                "hello@edugorilla.com\n\n".
+                                "+91 9410007819");
+        $pdf->addClientAddress("MonAdresse\n" .
+                               "75000 PARIS\n".
+                               "R.C.S. PARIS\n" .
+                               "Capital : 1800");
+        $pdf->left_blocks(80, 90, "DATE: 03/01/2017");
+        $pdf->left_blocks(80, 100, "AMOUNT IN RUPEES: 100/-");
+        $pdf->right_blocks(2, 80, 16, "INVOICE");
+        $pdf->right_blocks(2, 90, 12, "Bill To:");
+        $cols=array( "ITEM"      => 61,
+                     "RATE"      => 43,
+                     "QUANTITY"  => 43,
+                     "AMOUNT"    => 43,);
+        $pdf->addCols( $cols);
+        $cols=array( "ITEM"      => "C",
+                     "RATE"      => "C",
+                     "QUANTITY"  => "C",
+                     "AMOUNT"    => "C");
+        $pdf->addLineFormat( $cols);
+        $pdf->addLineFormat($cols);
+        $y    = 157;
+        $line = array( "ITEM"      => "EDUCASH",
+                       "RATE"      => "Rs. 2/-",
+                       "QUANTITY"  => "50",
+                       "AMOUNT"    => "Rs. 100/-");
+        $size = $pdf->addLine( $y, $line );
+        $y   += $size + 2;
+        $pdf->left_blocks(85, 200, "TOTAL: Rs. 100/-");
+        $pdf->left_blocks(75, 220, "PAYMENT MADE: Rs. 100/-");
+        $pdf->left_blocks(80, 240, "BALANCE DUE: Rs. 0/-");
+        $pdf->right_blocks(25, 200, 16, "Thanks For Your Business");
+        
         }
         else{
         $negative_email_subject = $edugorilla_email_datas2['subject'];
@@ -113,7 +167,7 @@ function allocate_educash_form_page()
         $negative_email_body = str_replace($arr1, $arr3, $edugorilla_email_datas2['body']);
         $message =  $negative_email_body;
         }
-        wp_mail( $to, $subject, $message, '', $attachment);
+        wp_mail( $to, $subject, $message ;
         $r = $wpdb->get_row("SELECT * FROM $table_name3 WHERE time = '$time' ");
         echo "<center></p>You have made the following entry just now:</p>";
         echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
