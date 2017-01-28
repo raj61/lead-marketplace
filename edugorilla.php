@@ -47,6 +47,7 @@ function create_edugorilla_lead_table()
                                             admin_id int(9) NOT NULL,
                                             client_id int(9) NOT NULL,
                                             transaction int(9) DEFAULT 0 NOT NULL,
+                                            amount int(9) DEFAULT 0 NOT NULL,
                                             time datetime NOT NULL,
                                             comments varchar(500) DEFAULT 'No comment' NOT NULL,
                                             PRIMARY KEY  (id)
