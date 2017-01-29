@@ -764,7 +764,7 @@ html, body {
 
 .card-cont {
 	list-style-type: none;
-	font-family: monospace;
+	font-family: inherit;
 }
 
 .col-sm-12.bgimg {

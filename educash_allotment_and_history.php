@@ -167,7 +167,7 @@ function allocate_educash_form_page()
         $negative_email_body = str_replace($arr1, $arr3, $edugorilla_email_datas2['body']);
         $message =  $negative_email_body;
         }
-        wp_mail( $to, $subject, $message ;
+	        wp_mail($to, $subject, $message);
         $r = $wpdb->get_row("SELECT * FROM $table_name3 WHERE time = '$time' ");
         echo "<center></p>You have made the following entry just now:</p>";
         echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";

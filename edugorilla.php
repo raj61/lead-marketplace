@@ -100,8 +100,8 @@ function edugorilla_lead_plugin_uninstall()
 	$wpdb->query("DROP TABLE IF EXISTS $table_name5");
 }//end pluginUninstall function
 
-//hook into WordPress when its being deactivated:
-register_deactivation_hook(__FILE__, 'edugorilla_lead_plugin_uninstall');
+//hook into WordPress when its being deactivated, uncommenting the following line will cause data loss
+//register_deactivation_hook(__FILE__, 'edugorilla_lead_plugin_uninstall');
 
 add_action("admin_menu", "create_edugorilla_menus");
 
