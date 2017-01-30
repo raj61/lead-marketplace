@@ -128,7 +128,7 @@ function create_edugorilla_menus()
 		'edugorilla-email-setting',
 		'edugorilla_email_setting'
 	);
-	
+
 	add_submenu_page(
 		'edugorilla',
 		'Lead Marketplace | Template of SMS',
@@ -164,7 +164,7 @@ function create_edugorilla_menus()
 		'allocate_educash_form_page',
 		'allocate_educash_form_page'
 	);
-    
+
     add_submenu_page(
 		'edugorilla',
 		'Lead Marketplace | Transaction History',
@@ -182,6 +182,15 @@ function create_edugorilla_menus()
 		'edugorilla-settings',
 		'edugorilla_settings'
 	);
+
+		add_submenu_page(
+		'edugorilla',
+		'Transaction Parameters',
+		'Transaction Parameters',
+		'manage_options',
+		'transaction_parameters',
+		'transaction_parameters'
+	);
 }
 
 include_once plugin_dir_path(__FILE__) . "view.php";
@@ -189,6 +198,7 @@ include_once plugin_dir_path(__FILE__) . "edit.php";
 include_once plugin_dir_path(__FILE__) . "otp.php";
 include_once plugin_dir_path(__FILE__) . "sms_setting.php";
 include_once plugin_dir_path(__FILE__) . "educash_allotment_and_history.php";
+include_once plugin_dir_path(__FILE__) . "transaction_parameters.php";
 
 function edugorilla()
 {
@@ -288,9 +298,9 @@ function edugorilla()
 							$institute_emails_status[$institute_email] = wp_mail($institute_email, $edugorilla_email_subject, ucwords($edugorilla_email_body));
 
 						remove_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type');
-						
+
 					}
-					
+
 					$institute_phones = explode(",", $json_result->phones);
 					include_once plugin_dir_path(__FILE__) . "api/ghupshup.api.php";
 					foreach ($institute_phones as $institute_phone) {
@@ -698,6 +708,8 @@ include_once plugin_dir_path(__FILE__) . "email_setting.php";
 include_once plugin_dir_path(__FILE__) . "list.php";
 
 include_once plugin_dir_path(__FILE__) . "inc/shortcode_transaction_history.php";
+
+include_once plugin_dir_path(__FILE__) . "inc/shortcode_educash_payment.php";
 
 function edugorilla_shortcode_require()
 {
