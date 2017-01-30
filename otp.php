@@ -12,9 +12,9 @@ function edugorilla_otp()
         	$msg = "Your OTP is".$otp.".";
         	$credentials = get_option("smsapi");
         	$response = send_sms($credentials['username'],$credentials['password'],$edugorilla_mno,$msg);
-      
+
         	$response = trim($response);
-        	
+
         	if($response != "error") $success = "<div class='notice notice-success is-dismissible'><p>OTP $otp has been sent successfully. </p></div>";
         	else $success = "<div class='notice notice-error is-dismissible'><p>Something went wrong</p></div>";
         }
@@ -24,9 +24,9 @@ function edugorilla_otp()
         <h1>EduGorilla OTP</h1>
         <?php
         if ($success) {
-             echo $success; 
+             echo $success;
     	?>
-           
+
             <?php
         }
         ?>
@@ -60,12 +60,12 @@ function edugorilla_settings()
     {
         $ghupshup_user_id = $_POST['ghupshup_user_id'];
         $ghupshup_pwd = $_POST['ghupshup_pwd'];
-        
+
         $errors = array();
-        
+
         if(empty($ghupshup_user_id)) $errors['ghupshup_user_id'] = "Empty";
         if(empty($ghupshup_pwd)) $errors['ghupshup_pwd'] = "Empty";
-        
+
         if(empty($errors))
         {
             $credentials = array("user_id"=>$ghupshup_user_id, "password" => $ghupshup_pwd);
