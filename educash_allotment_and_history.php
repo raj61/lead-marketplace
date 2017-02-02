@@ -88,7 +88,6 @@ function allocate_educash_form_page()
              </form></center>
 <?php
 //Displaying the transaction made just now if the values are legal and sending a mail to respective client otherwise displaying error message
-
     $client_display_name = $wpdb->get_var("SELECT display_name FROM $users_table WHERE user_email = '$clientName' ");
     if ($_POST['submit'] && (!empty($_POST['clientName'])) && (!empty($_POST['educash'])) && (!($check_client == 0))) {
         if($final_total<0){
@@ -131,8 +130,8 @@ function allocate_educash_form_page()
                                "75000 PARIS\n".
                                "R.C.S. PARIS\n" .
                                "Capital : 1800");
-        $pdf->left_blocks(80, 90, "DATE: 03/01/2017");
-        $pdf->left_blocks(80, 100, "AMOUNT IN RUPEES: 100/-");
+        $pdf->left_blocks(80, 90, "DATE: "." ".date("Y/m/d"));
+        $pdf->left_blocks(80, 100, "AMOUNT IN RUPEES: ".$money."/-");
         $pdf->right_blocks(2, 80, 16, "INVOICE");
         $pdf->right_blocks(2, 90, 12, "Bill To:");
         $cols=array( "ITEM"      => 61,
@@ -149,15 +148,32 @@ function allocate_educash_form_page()
         $y    = 157;
         $line = array( "ITEM"      => "EDUCASH",
                        "RATE"      => "Rs. 2/-",
-                       "QUANTITY"  => "50",
-                       "AMOUNT"    => "Rs. 100/-");
+                       "QUANTITY"  => $educash,
+                       "AMOUNT"    => "Rs. ".$money."/-");
         $size = $pdf->addLine( $y, $line );
         $y   += $size + 2;
-        $pdf->left_blocks(85, 200, "TOTAL: Rs. 100/-");
-        $pdf->left_blocks(75, 220, "PAYMENT MADE: Rs. 100/-");
-        $pdf->left_blocks(80, 240, "BALANCE DUE: Rs. 0/-");
+        $pdf->left_blocks(80, 200, "TOTAL: ");
+        $pdf->left_blocks(80, 220, "PAYMENT MADE: ");
+        $pdf->left_blocks(80, 240, "BALANCE DUE: ");
+		
+		$pdf->left_blocks(40, 200, "Rs. ".$money."/-");
+        $pdf->left_blocks(40, 220, "Rs. ".$money."/-");
+        $pdf->left_blocks(40, 240, "Rs. 0/-");
         $pdf->right_blocks(25, 200, 16, "Thanks For Your Business");
-        
+
+		
+		$eol = PHP_EOL;
+		$file_name = sys_get_temp_dir();
+		$file_name.= "/invoice.pdf";
+		$pdf->Output($file_name , "F");
+		$attachment = array($file_name);
+
+		$headers = array();
+		$headers[] = "From: ".$from.$eol;
+		$headers[] = "MIME-Version: 1.0".$eol;
+		$headers[] = "Content-Type: text/html;";
+		
+		wp_mail( $to, $subject, $message, $headers, $attachment);
         }
         else{
         $negative_email_subject = $edugorilla_email_datas2['subject'];
@@ -166,8 +182,9 @@ function allocate_educash_form_page()
         $arr3 = array($client_display_name, $negative_educash, $sum, "https://edugorilla.com/", "", "", "", "", "", "");
         $negative_email_body = str_replace($arr1, $arr3, $edugorilla_email_datas2['body']);
         $message =  $negative_email_body;
+		 wp_mail($to, $subject, $message);
         }
-	        wp_mail($to, $subject, $message);
+	       
         $r = $wpdb->get_row("SELECT * FROM $table_name3 WHERE time = '$time' ");
         echo "<center></p>You have made the following entry just now:</p>";
         echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
@@ -177,7 +194,6 @@ function allocate_educash_form_page()
       }
    }
 }
-
 function transaction_history_form_page()
 {
     global $wpdb;
