@@ -102,7 +102,6 @@
     </ul>
     </section>
     </div>
-
 <?php }
     else{
         $redirecting_url = home_url("/login");
