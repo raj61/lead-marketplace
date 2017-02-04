@@ -45,6 +45,15 @@
 				}
 			};
 			$scope.toggle_card_hidden = function (card) {
+				function hideSuccessCallback(response) {
+					//success code
+					card.isHidden = !card.isHidden;
+				}
+
+				function hideErrorCallback(error) {
+					//error code
+					alert("Unable to set the hidden status.");
+				}
 				$http({
 					method: 'POST',
 					url: '/wp-json/marketplace/v1/leads/sethidden',
@@ -55,16 +64,20 @@
 							str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
 						return str.join("&");
 					},
-					data: {lead_id: card.leadId, hidden_status: card.isHidden},
+					data: {lead_id: card.leadId, hidden_status: !card.isHidden},
 					cache: true
-				}).success(function (data, status, headers, config) {
-					card.isHidden = !card.isHidden;
-				})
-					.error(function (data, status, header, config) {
-						alert("Unable to set the hidden status.");
-					});
+				}).then(hideSuccessCallback, hideErrorCallback);
 			};
 			$scope.unlock_card_if_possible = function (card) {
+				function unlockSuccessCallback(response) {
+					//success code
+					card.isUnlocked = !card.isUnlocked;
+				}
+
+				function unlockErrorCallback(error) {
+					//error code
+					alert("Unable to set the Unlock status.");
+				}
 				$http({
 					method: 'POST',
 					url: '/wp-json/marketplace/v1/leads/setunlock',
@@ -77,12 +90,7 @@
 					},
 					data: {lead_id: card.leadId, unlock_status: card.isUnlocked},
 					cache: true
-				}).success(function (data, status, headers, config) {
-					card.isUnlocked = !card.isUnlocked;
-				})
-					.error(function (data, status, header, config) {
-						alert("Unable to set the Unlock status.");
-					});
+				}).then(unlockSuccessCallback, unlockErrorCallback);
 			};
 			$scope.cards = [];
 			$scope.topLocations = [];
@@ -131,20 +139,19 @@
 					}
 				}
 			};
+			function detailSuccessCallback(response) {
+				//success code
+				populateScopevariablesFromAPI(response.data);
+			}
+
+			function detailErrorCallback(error) {
+				//error code
+				alert("Unable to fetch the lead details from the API.");
+			}
 			$http({
 				url: '/wp-json/marketplace/v1/leads/details',
 				cache: true
-			})
-				.success(function (data, status, headers, config) {
-					// this callback will be called asynchronously
-					// when the response is available
-					populateScopevariablesFromAPI(data);
-				})
-				.error(function (data, status, header, config) {
-					// called asynchronously if an error occurs
-					// or server returns response with an error status.
-					alert("Unable to fetch the lead details from the API.");
-				});
+			}).then(detailSuccessCallback, detailErrorCallback);
 		}]);
 })(window.angular);
 

@@ -83,8 +83,10 @@ class Custom_Lead_API extends WP_REST_Controller
 	{
 		$lead_id = $request->get_param('lead_id');
 		$unlock_status = $request->get_param('unlock_status');
+		$unlock_status = $unlock_status == 'true' ? '1' : '0';
 		$userId = wp_get_current_user()->ID;
-		return set_card_unlock_status_to_db($userId, $lead_id, $unlock_status);
+		$dbStatus = set_card_unlock_status_to_db($userId, $lead_id, $unlock_status);
+		return $dbStatus;
 	}
 
 	/**
@@ -97,11 +99,12 @@ class Custom_Lead_API extends WP_REST_Controller
 	{
 		$lead_id = $request->get_param('lead_id');
 		$hidden_status = $request->get_param('hidden_status');
+		$hidden_status = (($hidden_status === 'true') ? '1' : '0');
 		$userId = wp_get_current_user()->ID;
 		set_card_hidden_status_to_db($userId, $lead_id, $hidden_status);
 
 		$data_object = array();
-		$data_object[] = "Successfully updated hidden_status to the database";
+		$data_object[] = "Successfully updated $lead_id's hidden_status to $hidden_status in the database";
 		$response = new WP_REST_Response($data_object);
 		return $response;
 	}
@@ -390,17 +393,15 @@ function set_card_hidden_status_to_db($client_id, $lead_id, $hidden_status)
 {
 	global $wpdb;
 	$lead_table = $wpdb->prefix . 'edugorilla_lead_client_mapping';
-	$hidden_status = $hidden_status ? '1' : '0';
 	$update_query = "UPDATE $lead_table SET is_hidden = '$hidden_status' WHERE $lead_table.lead_id = $lead_id AND $lead_table.client_id = $client_id";
 	$hidden_status_update_result = $wpdb->get_results($update_query);
-	echo "$hidden_status_update_result";
+	return $hidden_status_update_result;
 }
 
 function set_card_unlock_status_to_db($client_id, $lead_id, $unlock_status)
 {
 	global $wpdb;
 	$lead_table = $wpdb->prefix . 'edugorilla_lead_client_mapping';
-	$unlock_status = $unlock_status ? '1' : '0';
 	$result_status_string = "";
 	if ($unlock_status == '1') {
 		$eduCashHelper = new EduCash_Helper();
