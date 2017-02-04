@@ -324,7 +324,7 @@ function edugorilla()
 					}
 
 					$institute_phones = explode(",", $json_result->phones);
-					include_once plugin_dir_path(__FILE__) . "api/ghupshup.api.php";
+					include_once plugin_dir_path(__FILE__) . "api/gupshup-api.php";
 					foreach ($institute_phones as $institute_phone) {
 						$smsapi = get_option("smsapi");
 						$msg = str_replace("{Contact_Person}", $json_result->contact_person, $smsapi['message']);

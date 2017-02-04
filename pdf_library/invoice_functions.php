@@ -62,7 +62,7 @@ function left_blocks($x1, $y1, $content)
     $r1  = $this->w - $x1;
     $this->SetFont( "Arial", "B", 12);
 	$this->SetXY( $r1, $y1);
-    $this->Cell(40,4, $content , '', '', "C");
+    $this->Cell(40,4, $content , '', '', "L");
 }
 
 function addCols( $tab )
