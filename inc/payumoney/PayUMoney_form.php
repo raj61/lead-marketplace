@@ -1,6 +1,4 @@
 <?php
-session_start();
-$_SESSION['saltid']=$_POST['saltid'];
 
 // End point - change to https://secure.payu.in for LIVE mode
 $PAYU_BASE_URL = "https://test.payu.in";

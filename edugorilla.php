@@ -182,15 +182,6 @@ function create_edugorilla_menus()
 		'edugorilla-settings',
 		'edugorilla_settings'
 	);
-
-		add_submenu_page(
-		'edugorilla',
-		'Transaction Parameters',
-		'Transaction Parameters',
-		'manage_options',
-		'transaction_parameters',
-		'transaction_parameters'
-	);
 }
 
 include_once plugin_dir_path(__FILE__) . "view.php";
@@ -198,7 +189,6 @@ include_once plugin_dir_path(__FILE__) . "edit.php";
 include_once plugin_dir_path(__FILE__) . "otp.php";
 include_once plugin_dir_path(__FILE__) . "sms_setting.php";
 include_once plugin_dir_path(__FILE__) . "educash_allotment_and_history.php";
-include_once plugin_dir_path(__FILE__) . "transaction_parameters.php";
 
 function edugorilla()
 {
