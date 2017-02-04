@@ -88,7 +88,7 @@
 							str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
 						return str.join("&");
 					},
-					data: {lead_id: card.leadId, unlock_status: card.isUnlocked},
+					data: {lead_id: card.leadId, unlock_status: "true"},
 					cache: true
 				}).then(unlockSuccessCallback, unlockErrorCallback);
 			};

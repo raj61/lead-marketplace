@@ -83,8 +83,11 @@ class Custom_Lead_API extends WP_REST_Controller
 	{
 		$lead_id = $request->get_param('lead_id');
 		$unlock_status = $request->get_param('unlock_status');
-		$unlock_status = $unlock_status == 'true' ? '1' : '0';
-		$userId = wp_get_current_user()->ID;
+		$unlock_status = (($unlock_status === 'true') ? '1' : '0');
+		$userId = apply_filters('determine_current_user', false);
+		if ($userId <= 0) {
+			return new WP_Error("User($userId) is not logged in");
+		}
 		$dbStatus = set_card_unlock_status_to_db($userId, $lead_id, $unlock_status);
 		return $dbStatus;
 	}
@@ -100,7 +103,10 @@ class Custom_Lead_API extends WP_REST_Controller
 		$lead_id = $request->get_param('lead_id');
 		$hidden_status = $request->get_param('hidden_status');
 		$hidden_status = (($hidden_status === 'true') ? '1' : '0');
-		$userId = wp_get_current_user()->ID;
+		$userId = apply_filters('determine_current_user', false);
+		if ($userId <= 0) {
+			return new WP_Error("User($userId) is not logged in");
+		}
 		set_card_hidden_status_to_db($userId, $lead_id, $hidden_status);
 
 		$data_object = array();
@@ -119,7 +125,13 @@ class Custom_Lead_API extends WP_REST_Controller
 	{
 		//$card1 = new Lead_Card('Rohit', 'Lucknow', 'CEO', 'Nirvana');
 		//$card2 = new Lead_Card('Anantharam', 'Chennai', 'CTO', 'Relationship');
-		$data_object = get_lead_details_from_db();
+
+		$userId = apply_filters('determine_current_user', false);
+		if ($userId <= 0) {
+			return new WP_Error("User($userId) is not logged in");
+		}
+
+		$data_object = get_lead_details_from_db($userId);
 
 		// Create the response object
 		$response = new WP_REST_Response($data_object);
@@ -356,14 +368,17 @@ try {
  * Get details of all the leads table from database
  *
  */
-function get_lead_details_from_db()
+function get_lead_details_from_db($client_id)
 {
+	global $wpdb;
 	//$card1 = new Lead_Card('Rohit', 'Lucknow', 'CEO', 'Nirvana');
 	//$card2 = new Lead_Card('Anantharam', 'Chennai', 'CTO', 'Relationship');
 	$cards_object = array();
+	$lead_detail_table = $wpdb->prefix . 'edugorilla_lead_details';
+	$lead_table = $wpdb->prefix . 'edugorilla_lead_client_mapping';
 
-	global $wpdb;
-	$detail_query = "select * from {$wpdb->prefix}edugorilla_lead_details";
+
+	$detail_query = "select * from $lead_detail_table";
 	$leads_details = $wpdb->get_results($detail_query, 'ARRAY_A');
 	foreach ($leads_details as $leads_detail) {
 		$lead_id = $leads_detail['id'];
@@ -374,13 +389,26 @@ function get_lead_details_from_db()
 		$lead_category = $leads_detail['category_id'];
 		$lead_location = $leads_detail['location_id'];
 		$lead_date_time = $leads_detail['date_time'];
-		$mapping_query = "select * from {$wpdb->prefix}edugorilla_lead_client_mapping WHERE lead_id=$lead_id";
+		$mapping_query = "select * from $lead_table WHERE lead_id=$lead_id";
 		$leads_mapping_details = $wpdb->get_results($mapping_query, 'ARRAY_A');
-		$lead_is_unlocked = false;
-		$lead_is_hidden = false;
+		$lead_is_unlocked = "unknown";
+		$lead_is_hidden = "unknown";
 		foreach ($leads_mapping_details as $leads_mapping_detail) {
 			$lead_is_unlocked = $leads_mapping_detail['is_unlocked'];
 			$lead_is_hidden = $leads_mapping_detail['is_hidden'];
+		}
+		if ($lead_is_unlocked == "unknown" || $lead_is_hidden == "unknown") {
+			//Seems like a new client, so creating this new row.
+			$result1 = $wpdb->insert(
+				$lead_table,
+				array(
+					'client_id' => $client_id,
+					'lead_id' => $lead_id
+				)
+			);
+
+			$lead_is_unlocked = 0;
+			$lead_is_hidden = 0;
 		}
 		$db_card = new Lead_Card($lead_id, $lead_name, $lead_email, $lead_contact_no, $lead_query, $lead_category, $lead_location, $lead_date_time, $lead_is_unlocked, $lead_is_hidden);
 		$cards_object[] = $db_card;
@@ -405,12 +433,14 @@ function set_card_unlock_status_to_db($client_id, $lead_id, $unlock_status)
 	$result_status_string = "";
 	if ($unlock_status == '1') {
 		$eduCashHelper = new EduCash_Helper();
-		$eduCashCostForLead = 1;
+		$eduCashCostForLead = 1; //TODO: get from edugorilla_educash_conversion_ratio
 		$query_status = $eduCashHelper->removeEduCashFromUser($client_id, $eduCashCostForLead);
 		if (!str_starts_with($query_status, "Success")) {
-			return new WP_Error('EduCashError', $query_status);;
+			return new WP_Error('EduCashError', $query_status . " for $client_id");
 		}
 		$result_status_string = $query_status;
+	} else {
+		$result_status_string = "Locking the card for status $unlock_status.";
 	}
 	$update_query = "UPDATE $lead_table SET is_unlocked = '$unlock_status' WHERE $lead_table.lead_id = $lead_id AND $lead_table.client_id = $client_id";
 	$wpdb->get_results($update_query);

@@ -76,9 +76,11 @@ class Lead_Card implements JsonSerializable
 		return $this->location;
 	}
 
-	public function setLocation($x)
+	public function setLocation($location_id)
 	{
-		$this->location = $x;
+		$location_data = get_term_by('id', $location_id, 'locations');
+		$leads_location = $location_data->name;
+		$this->location = $leads_location;
 	}
 
 	public function getCategory()
@@ -86,9 +88,11 @@ class Lead_Card implements JsonSerializable
 		return $this->category;
 	}
 
-	public function setCategory($x)
+	public function setCategory($category_id)
 	{
-		$this->category = $x;
+		$category_data = get_term_by('id', $category_id, 'listing_categories');
+		$leads_category = $category_data->name;
+		$this->category = $leads_category;
 	}
 
 	public function getQuery()
