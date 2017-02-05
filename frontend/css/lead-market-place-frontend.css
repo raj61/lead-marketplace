@@ -1165,7 +1165,7 @@ time {
 				by mayank joshi ***/
 
 
-.card{
+.pay_card{
 		  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 			width: 100%;
 		  padding-left: 120px;
@@ -1173,11 +1173,9 @@ time {
 			margin-top: 25px;
 			text-align: center;
 			margin-bottom: 25px;
-			<?php $background = plugins_url('payumoney/background.png',__FILE__); ?>
-			background-image: url("<?php echo $background;?>");
 }
 
-.card2{
+.pay_card2{
 			padding-top: 40px;
 			padding-bottom: 40px;
 			margin-left: 60px;
@@ -1185,12 +1183,12 @@ time {
 			text-align: center;
 }
 
-p{
+pay_p{
 			padding-bottom: 30px;
 			padding-left:
 }
 
-.output_amount{
+.pay_output_amount{
 				  text-align: center;
 					font-size: 17pt;
 					color: #5c5c3d;
@@ -1199,18 +1197,18 @@ p{
 				  border: solid #DCDCDC;
 				  border-width: thin;
 				  padding-top: 10px;
-				  margin-top:15px;
+				  margin-top:17px;
 				  background-color: white;
 				  width: 320px;
 				  height: 50px;
 				  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.select2{
+.pay_select2{
 			width:15px;
 }
 
-.heading1{
+.pay_heading1{
 				  color:  #3AD5A0;
 				  font-size: 34px;
 				   text-align: center;
@@ -1218,7 +1216,7 @@ p{
 				   text-shadow: 1px 1px 2px #98FB98;
 }
 
-.button1,.button2,.button3{
+.pay_button1{
 			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 			background-color: #F5F5F5;
 			border: solid #DCDCDC;
@@ -1229,34 +1227,34 @@ p{
 			margin-right: 20px;
 }
 
-.inputbox1{
+.pay_inputbox1{
 			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 			margin-left: 170px;
 			margin-right: 170px;
 }
 
-.button1 {
+.pay_button1 {
   display: inline-block;
   border-radius: 4px;
   background-color: #f5f5ef;
   border: none;
   text-align: center;
   font-size: 28px;
-  padding: 20px;
+	padding-bottom: 20px;
   width: 330px;
   transition: all 0.5s;
   cursor: pointer;
-  margin: 7px;
+
 }
 
-.button1 span {
+.pay_button1 span {
   cursor: pointer;
   display: inline-block;
   position: relative;
   transition: 0.5s;
 }
 
-.button1 span:after {
+.pay_button1 span:after {
   content: '\00bb';
   position: absolute;
   opacity: 0;
@@ -1265,11 +1263,11 @@ p{
   transition: 0.5s;
 }
 
-.button1:hover span {
+.pay_button1:hover span {
   padding-right: 25px;
 }
 
-.button1:hover span:after {
+.pay_button1:hover span:after {
   opacity: 1;
   right: 0;
 }
