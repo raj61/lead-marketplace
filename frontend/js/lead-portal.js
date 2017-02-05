@@ -155,6 +155,12 @@
 			function detailErrorCallback(error) {
 				//error code
 				alert("Unable to fetch the lead details from the API.");
+				new Custombox.modal({
+					content: {
+						effect: 'fadein',
+						target: '#modal'
+					}
+				}).open();
 			}
 			$http({
 				url: '/wp-json/marketplace/v1/leads/details',
