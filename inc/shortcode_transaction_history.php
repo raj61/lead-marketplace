@@ -20,7 +20,7 @@
        $sql = "SELECT * FROM $table_name1 WHERE client_id = $current_user_id order by date_time";
        $totalrows = $wpdb->get_results($sql);
 
-       $table_name2 = $wpdb->prefix . 'edugorilla_lead_educash_tranaction';
+       $table_name2 = $wpdb->prefix . 'edugorilla_lead_educash_transactions';
        $sql = "SELECT * FROM $table_name2 WHERE client_id = $current_user_id";
        $total_cash = $wpdb->get_results($sql);
        $i = 0;
