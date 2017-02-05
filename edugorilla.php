@@ -4,12 +4,8 @@
  * Description: A platform to manage all the leads on Website.
  * Version: Alpha release
  * Author: EduGorilla Tech Team
- * Author URI: https://github.com/rohitmanglik/lead-marketplace
+ * Author URI: https://github.com/EduGorilla/lead-marketplace
  **/
-require_once(plugin_dir_path(__FILE__) . 'frontend/class-Lead-Card.php'); /*Cards used for displaying leads */
-require_once(plugin_dir_path(__FILE__) . 'frontend/class-Custom-Lead-API.php'); /*API to be used for displaying leads */
-require_once(plugin_dir_path(__FILE__) . 'frontend/class-EduCash-Helper.php'); /*Utility class used for dealing with EduCash */
-require_once(plugin_dir_path(__FILE__) . 'database/class-DataBase-Helper.php'); /*Utility class used for dealing with Database */
 
 function create_edugorilla_lead_table()
 {
@@ -60,16 +56,18 @@ function create_edugorilla_lead_table()
 											lead_id int(15) NOT NULL,
 											is_unlocked boolean DEFAULT 0 NOT NULL,
                                             is_hidden boolean DEFAULT 0 NOT NULL,
-						                    date_time datetime NOT NULL,
+						                    date_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 									        operation SMALLINT(1) NOT NULL DEFAULT '1'
 				  					    ) $charset_collate;";
 
 	$table_name5 = $wpdb->prefix . 'edugorilla_educash_conversion_ratio'; //Mapping between educash and other currencies
 	$sql5 = "CREATE TABLE $table_name5 (
 				                            id int(15) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-											edu_cash double NOT NULL,
-											karma double NOT NULL,
-											rupees double NOT NULL,
+											edu_cash double NOT NULL DEFAULT 1,
+											karma double NOT NULL DEFAULT 1,
+											rupees double NOT NULL DEFAULT 1,
+											leads double NOT NULL DEFAULT 1,
+											modification_time DATETIME ON UPDATE CURRENT_TIMESTAMP
 									        PRIMARY KEY  (id)
 				  					    ) $charset_collate;";
 
@@ -211,6 +209,11 @@ include_once plugin_dir_path(__FILE__) . "edit.php";
 include_once plugin_dir_path(__FILE__) . "otp.php";
 include_once plugin_dir_path(__FILE__) . "sms_setting.php";
 include_once plugin_dir_path(__FILE__) . "educash_allotment_and_history.php";
+include_once plugin_dir_path(__FILE__) . 'frontend/class-Lead-Card.php'; /*Cards used for displaying leads */
+include_once plugin_dir_path(__FILE__) . 'frontend/class-Custom-Lead-API.php'; /*API to be used for displaying leads */
+include_once plugin_dir_path(__FILE__) . 'frontend/class-EduCash-Helper.php'; /*Utility class used for dealing with EduCash */
+include_once plugin_dir_path(__FILE__) . 'database/class-DataBase-Helper.php'; /*Utility class used for dealing with Database */
+
 
 function edugorilla()
 {
@@ -247,7 +250,7 @@ function edugorilla()
 			$institute_sms_status = array();
 
 			if (!empty($category_id)) $category = implode(",", $category_id);
-			else $category = "";
+			else $category = "NoCategory";
 
 			$json_results = json_decode(stripslashes($edugorilla_institute_datas));
 
@@ -730,8 +733,8 @@ function edugorilla_shortcode_require()
 	wp_enqueue_script('ajaxlib1', 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js');
 	wp_enqueue_script('ajaxlib2', 'https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js');
 	wp_enqueue_script('bootjs', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js');
-	wp_enqueue_script('angularJs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js');
-	wp_enqueue_script('angularAnimate', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js');
+	wp_enqueue_script('angularJs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js');
+	wp_enqueue_script('angularAnimate', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.js');
 
 	wp_enqueue_style('custom_css', plugins_url('/frontend/css/lead-market-place-frontend.css', __FILE__), array(), rand(111, 9999), 'all');
 	wp_enqueue_style('custom_css', plugins_url('/frontend/css/lead-portal-animations.css', __FILE__), array(), rand(111, 9999), 'all');

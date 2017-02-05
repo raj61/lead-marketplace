@@ -45,12 +45,10 @@ class DataBase_Helper
 		return "Success";
 	}
 
-	public function get_educash_for_user($user_id)
+	public function get_educash_for_user($current_user_id)
 	{
 		global $wpdb;
 		$current_educash = 0;
-		$current_user_id = get_current_user_id();
-
 		$transaction_table = $wpdb->prefix . 'edugorilla_lead_educash_transactions';
 		$sql = "SELECT * FROM $transaction_table WHERE client_id = $current_user_id";
 		$total_cash = $wpdb->get_results($sql);
