@@ -96,39 +96,47 @@
 			$scope.topLocations = [];
 			$scope.topCategories = [];
 			function populateScopevariablesFromAPI(data) {
-				var locationCount = {};
-				var categoryCount = {};
+				var locationArray = {};
+				var categoryArray = {};
 				for (var index = 0; index < data.length; ++index) {
 					var card = data[index].lead_card;
-					var locationInt = ++locationCount[card.location];
-					var catrgoryInt = ++categoryCount[card.category];
-					if (isNaN(locationInt)) {
-						locationCount[card.location] = locationInt = 1;
+					if (card.locationId == -1) {
+						card.locationName = "UnknownLocation";
 					}
-					if (isNaN(catrgoryInt)) {
-						categoryCount[card.category] = catrgoryInt = 1;
+					if (card.categoryId == -1) {
+						card.categoryName = "UnknownCategory";
+					}
+					var locationCount = ++locationArray[card.locationName];
+					var catergoryCount = ++categoryArray[card.categoryName];
+					if (isNaN(locationCount)) {
+						locationArray[card.locationName] = locationCount = 1;
+					}
+					if (isNaN(catergoryCount)) {
+						categoryArray[card.categoryName] = catergoryCount = 1;
 					}
 					var currentLocation = {
-						Name: card.location,
-						Count: locationInt
+						Name: card.locationName,
+						locId: card.locationId,
+						Count: locationCount
 					};
 					var currentCategory = {
-						Name: card.category,
-						Count: catrgoryInt
+						Name: card.categoryName,
+						catId: card.categoryId,
+						Count: catergoryCount
 					};
 					$scope.cards.push(card);
 					var isExistingLocation = false;
 					var isExistingCategory = false;
 					for (var i = 0; i < $scope.topLocations.length; i++) {
-						if ($scope.topLocations[i].Name == currentLocation.Name) {
+						if ($scope.topLocations[i].locId == currentLocation.locId) {
 							isExistingLocation = true;
-							$scope.topLocations[i].Count = locationInt;
+							$scope.topLocations[i].Count = locationCount;
 						}
 					}
 					for (var i = 0; i < $scope.topCategories.length; i++) {
-						if ($scope.topCategories[i].Name == currentCategory.Name) {
+						if ($scope.topCategories[i].catId == currentCategory.catId) {
 							isExistingCategory = true;
-							$scope.topCategories[i].Count = catrgoryInt;
+							$scope.topCategories[i].Count = catergoryCount;
 						}
 					}
 					if (!isExistingLocation) {

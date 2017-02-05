@@ -27,19 +27,25 @@
 			<hr>
             <h6 class="ref_heading">By Category : </h6>
             <ul class="refine">
-	            <li ng-repeat="topCategory in topCategories" ng-click="setSelectedCategories(topCategory)">
-		            <input type="checkbox" ng-true-value="containsInArray(userSelectedCategories,topCategory.Name)">
+	            <li ng-repeat="topCategory in topCategories">
+		            <input type="checkbox" ng-click="setSelectedCategories(topCategory)"
+		                   ng-true-value="containsInArray(userSelectedCategories,topCategory.Name)">
 		            {{topCategory.Name}}<span class="ref_val">({{topCategory.Count}})</span>
 	            </li>
-                <li class="see_more">[+]See More</li>
+	            <a href="#">
+		            <li class="see_more" hidden>[+]See More</li>
+	            </a>
             </ul>
             <h6 class="ref_heading">By Location : </h6>
             <ul class="refine">
-	            <li ng-repeat="topLocation in topLocations" ng-click="setSelectedLocations(topLocation)">
-		            <input type="checkbox" ng-true-value="containsInArray(userSelectedLocations,topLocation.Name)">
+	            <li ng-repeat="topLocation in topLocations">
+		            <input type="checkbox" ng-click="setSelectedLocations(topLocation)"
+		                   ng-true-value="containsInArray(userSelectedLocations,topLocation.Name)">
 		            {{topLocation.Name}}<span class="ref_val">({{topLocation.Count}})</span>
 	            </li>
-                <a href="#"><li class="see_more">[+]See More</li></a>
+	            <a href="#">
+		            <li class="see_more" hidden>[+]See More</li>
+	            </a>
             </ul>
 		</div>
 		<div class="container col-sm-8">
@@ -49,8 +55,8 @@
 						<div class="col-sm-12 bgimg">
 							<ul class="card-cont">
 								<li><i class="fa fa-user fa-fw" aria-hidden="true"></i>{{card.name}}</li>
-								<li><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>{{card.location}}</li>
-								<li><i class="fa fa-tag fa-fw" aria-hidden="true"></i>{{card.category}}</li>
+								<li><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>{{card.locationName}}</li>
+								<li><i class="fa fa-tag fa-fw" aria-hidden="true"></i>{{card.categoryName}}</li>
 							</ul>
 						</div>
 					</div>

@@ -4,7 +4,7 @@ $appear = '';
 class Lead_Card implements JsonSerializable
 {
 
-	private $id, $name, $contact_no, $email, $query, $category, $location, $date_time, $isUnlocked, $isHidden;
+	private $id, $name, $contact_no, $email, $query, $category_id, $category, $location_id, $location, $date_time, $isUnlocked, $isHidden;
 
 	function __construct($id, $name, $contact_no, $email, $query, $category, $location, $date_time, $isUnlocked = false, $isHidden = false)
 	{
@@ -71,27 +71,39 @@ class Lead_Card implements JsonSerializable
 		$this->name = $x;
 	}
 
-	public function getLocation()
+	public function getLocationId()
+	{
+		return $this->location_id;
+	}
+
+	public function getLocationName()
 	{
 		return $this->location;
 	}
 
 	public function setLocation($location_id)
 	{
+		$this->location_id = $location_id;
 		$location_data = get_term_by('id', $location_id, 'locations');
-		$leads_location = $location_data->name;
+		$leads_location = html_entity_decode($location_data->name);
 		$this->location = $leads_location;
 	}
 
-	public function getCategory()
+	public function getCategoryId()
+	{
+		return $this->category_id;
+	}
+
+	public function getCategoryName()
 	{
 		return $this->category;
 	}
 
 	public function setCategory($category_id)
 	{
+		$this->category_id = $category_id;
 		$category_data = get_term_by('id', $category_id, 'listing_categories');
-		$leads_category = $category_data->name;
+		$leads_category = html_entity_decode($category_data->name);
 		$this->category = $leads_category;
 	}
 
@@ -144,8 +156,10 @@ class Lead_Card implements JsonSerializable
 				'contact_no' => $this->getContactNo(),
 				'email' => $this->getEmail(),
 				'query' => $this->getQuery(),
-				'category' => $this->getCategory(),
-				'location' => $this->getLocation(),
+				'categoryName' => $this->getCategoryName(),
+				'locationName' => $this->getLocationName(),
+				'categoryId' => $this->getCategoryId(),
+				'locationId' => $this->getLocationId(),
 				'date_time' => $this->getDateTime(),
 				'isUnlocked' => $this->isUnlocked(),
 				'isHidden' => $this->isHidden()

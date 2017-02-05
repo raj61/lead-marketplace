@@ -258,7 +258,9 @@ function edugorilla()
 			$institute_sms_status = array();
 
 			if (!empty($category_id)) $category = implode(",", $category_id);
-			else $category = "NoCategory";
+			else $category = "-1";
+
+			if (empty($location_id)) $location_id = "-1";
 
 			$json_results = json_decode(stripslashes($edugorilla_institute_datas));
 
