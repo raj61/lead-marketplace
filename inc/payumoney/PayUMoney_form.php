@@ -91,8 +91,8 @@ if(empty($posted['hash']) && sizeof($posted) > 0) {
           <input type="hidden" name="phone" value="<?php echo (empty($posted['phone'])) ? '123456789' : $posted['phone']; ?>" />
           <input type="hidden" name="saltid" id="saltid" value="<?php echo $_POST['saltid']; ?>" type="hidden"/>
           <input name="productinfo" type="hidden" value="<?php echo "Purchase Of ".$_POST['amount']." educash "; ?>"/>
-          <input type="hidden" name="surl" value="<?php echo (empty($posted['surl'])) ? 'failed' : $posted['surl']; ?>" size="64" />
-          <input type="hidden" name="furl" value="<?php echo (empty($posted['furl'])) ? 'success' : $posted['furl']; ?>" size="64" />
+          <input type="hidden" name="surl" value="<?php echo (empty($posted['surl'])) ? 'succes' : $posted['surl']; ?>" size="64" />
+          <input type="hidden" name="furl" value="<?php echo (empty($posted['furl'])) ? 'fail' : $posted['furl']; ?>" size="64" />
 
 
           <input type="hidden" name="service_provider" value="payu_paisa" size="64" />
