@@ -12,8 +12,7 @@
         $background = plugins_url('payumoney/background.png',__FILE__);
 
         $next_page = plugins_url('payumoney/PayUMoney_form.php',__FILE__);
-        $failure = plugins_url('payumoney/failure.php',__FILE__);
-        $success = plugins_url('payumoney/success.php',__FILE__);
+        $redirect_url = plugins_url('payumoney/success.php',__FILE__);
         $payumoney_logo = plugins_url('payumoney/PayUMoney_logo.png',__FILE__);
         $netbanking_logo = plugins_url('payumoney/netbanking.png',__FILE__);
 
@@ -29,8 +28,7 @@
               <input name="txnid" id="txnid" value="<?php echo $credentials['password'];  ?>" type="hidden"/>
               <input name="rate" id="rate" value="<?php echo $conversion; ?>" type="hidden"/>
               <input name="saltid" id="saltid" value="<?php echo $credentials['user_id']; ?>" type="hidden"/>
-              <input name="surl " id="surl" value="<?php echo $success; ?>" type="hidden"/>
-              <input name="furl" id="furl" value="<?php echo $failure; ?>" type="hidden"/>
+              <input name="furl" id="furl" value="<?php echo $redirect_url; ?>" type="hidden"/>
 
               <b><span class="pay_heading1">Enter number of educash you want</span></br></b>
               <br><div class="pay_inputbox1"><input  ng-model="amount" type="number" name="amount" placeholder="0" style="font-size: 20pt; text-align: center; font-weight: bold;" required/></div>
