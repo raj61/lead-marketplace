@@ -83,6 +83,10 @@ function create_edugorilla_lead_table()
 
 register_activation_hook(__FILE__, 'create_edugorilla_lead_table');
 
+register_activation_hook(__FILE__,'my_email_activation');
+
+register_activation_hook(__FILE__, 'table_for_client');
+
 function edugorilla_lead_plugin_uninstall()
 {
 	global $wpdb;
@@ -91,11 +95,13 @@ function edugorilla_lead_plugin_uninstall()
 	$table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_transactions';
 	$table_name4 = $wpdb->prefix . 'edugorilla_lead_client_mapping';
 	$table_name5 = $wpdb->prefix . 'edugorilla_educash_conversion_ratio';
+	$table_name6 = $wpdb->prefix . 'edugorilla_client_preferences';
 	$wpdb->query("DROP TABLE IF EXISTS $table_name1");
 	$wpdb->query("DROP TABLE IF EXISTS $table_name2");
 	$wpdb->query("DROP TABLE IF EXISTS $table_name3");
 	$wpdb->query("DROP TABLE IF EXISTS $table_name4");
 	$wpdb->query("DROP TABLE IF EXISTS $table_name5");
+	$wpdb->query("DROP TABLE IF EXISTS $table_name6");
 }//end pluginUninstall function
 
 //hook into WordPress when its being deactivated, uncommenting the following line will cause data loss
@@ -213,6 +219,8 @@ include_once plugin_dir_path(__FILE__) . 'frontend/class-Lead-Card.php'; /*Cards
 include_once plugin_dir_path(__FILE__) . 'frontend/class-Custom-Lead-API.php'; /*API to be used for displaying leads */
 include_once plugin_dir_path(__FILE__) . 'frontend/class-EduCash-Helper.php'; /*Utility class used for dealing with EduCash */
 include_once plugin_dir_path(__FILE__) . 'database/class-DataBase-Helper.php'; /*Utility class used for dealing with Database */
+include_once plugin_dir_path(__FILE__) . "send_email_to_client.php";
+
 
 
 function edugorilla()
@@ -250,7 +258,9 @@ function edugorilla()
 			$institute_sms_status = array();
 
 			if (!empty($category_id)) $category = implode(",", $category_id);
-			else $category = "NoCategory";
+			else $category = "-1";
+
+			if (empty($location_id)) $location_id = "-1";
 
 			$json_results = json_decode(stripslashes($edugorilla_institute_datas));
 
@@ -304,6 +314,8 @@ function edugorilla()
 					foreach ($email_template_datas as $var => $email_template_data) {
 						$edugorilla_email_body = str_replace($var, $email_template_data, $edugorilla_email_body);
 					}
+
+					$institute_send_emails_status = send_mail($edugorilla_email_subject, $edugorilla_email_body);
 
 					$institute_emails = explode(",", $json_result->emails);
 					foreach ($institute_emails as $institute_email) {
@@ -747,4 +759,6 @@ function edugorilla_shortcode_require()
 }
 
 add_action('wp_enqueue_scripts', 'edugorilla_shortcode_require');
+
+
 ?>
