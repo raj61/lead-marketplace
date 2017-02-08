@@ -261,6 +261,7 @@ function allocate_educash_form_page()
         $pdf->AddPage();
         $pdf->Image("https://electronicsguide.000webhostapp.com/wp-content/uploads/2017/01/eg_logo.jpg",10,10,53.898305,60);
         $pdf->right_blocks(70, 25, 20, "EduGorilla");
+		$pdf->right_blocks(71, 35, 12, "U74999UP2016PTC088614");
         $pdf->addCompanyAddress("House No. 4719/A,\n".
                                 "Sector 23A,\n" .
                                 "Gurgaon - 122002,\n".
@@ -289,7 +290,7 @@ function allocate_educash_form_page()
         $y    = 157;
         $line = array( "ITEM"      => "EDUCASH",
                        "RATE"      => "Rs. 2/-",
-                       "QUANTITY"  => $educash,
+                       "QUANTITY"  => $educash_added,
                        "AMOUNT"    => "Rs. ".$money."/-");
         $size = $pdf->addLine( $y, $line );
         $y   += $size + 2;
