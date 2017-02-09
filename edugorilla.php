@@ -18,7 +18,10 @@ function create_edugorilla_lead_table()
                                             contact_no varchar(50) NOT NULL,
                                             email varchar(200) NOT NULL,
                                             query text(500) NOT NULL,
+                                            is_promotional text(500) NOT NULL,
+                                            listing_type text(500) NOT NULL,
                                             category_id text(500) NOT NULL,
+                                            keyword text(500) NOT NULL,
                                             location_id varchar(200) NOT NULL,
                                             date_time varchar(200) NOT NULL,
                                             PRIMARY KEY id (id)
@@ -233,6 +236,8 @@ function edugorilla()
 		$contact_no = $_POST['contact_no'];
 		$keyword = $_POST['keyword'];
 		$email = $_POST['email'];
+		$is_promotional_lead = $_POST['is_promotional_lead'];
+		$listing_type = $_POST['listing_type'];
 		$query = $_POST['query'];
 		$category_id = $_POST['category_id'];
 		$location_id = $_POST['location'];
@@ -277,6 +282,9 @@ function edugorilla()
 					'contact_no' => $contact_no,
 					'email' => $email,
 					'query' => $query,
+					'is_promotional' => $is_promotional_lead,
+					'listing_type' => $listing_type,
+					'keyword' => $keyword,
 					'category_id' => $category,
 					'location_id' => $location_id,
 					'date_time' => current_time('mysql')

@@ -7,49 +7,120 @@ function allocate_educash_form_page()
     
 //Checking if the admin has filled adequate information to submit the form to allot educash and inserting the legal values in table
     
-    if ($_POST['submit']) {
-        if (empty($_POST['clientName'])) {
-            $clientnamerr = "<span  style='color:red;'>* This field cannot be blank</span>";
-        } else {
-            $clientName = $_POST['clientName'];
+		if ($_POST['submit']) {
+			$clientName = $_POST['clientName'];
             $check_client = $wpdb->get_var("SELECT COUNT(ID) from $users_table WHERE user_email = '$clientName' ");
             if($check_client == 0){
-                $invalid_client = "<span style='color:red'>This client does not exist in our database</span>";
+                echo '<script>alert("This client does not exist in our database");</script>';
             }
-        }
-        if (empty($_POST['educash'])) {
-            $educasherr = "<span style='color:red;'>* This field cannot be blank</span>";
-        } else {
-            $educash = $_POST['educash'];
-        }
-        if ((!empty($_POST['clientName'])) && (!empty($_POST['educash'])) && (!($check_client == 0))) {
+			else{
+		    if (empty($_POST['educash'])) {
+            echo '<script>alert("The field of educash cnnot be blank");</script>';
+            } else {
+            $educash_added = $_POST['educash'];
             $client_ID_result = $wpdb->get_var("SELECT ID FROM $users_table WHERE user_email = '$clientName' ");
             $total = $wpdb->get_var("SELECT sum(transaction) FROM $table_name3 WHERE client_id = '$client_ID_result' ");
             $final_total = $total + $educash;
             if($final_total>=0){
             $money = $_POST['money'];
             $adminName = wp_get_current_user();
-            $client_ID = $wpdb->get_var("SELECT ID from $users_table WHERE user_email = '$clientName' ");
             $adminComment = $_POST['adminComment'];
             $time = current_time('mysql');
             $wpdb->insert($table_name3, array(
                 'time' => $time,
                 'admin_id' => $adminName->ID,
-                'client_id' => $client_ID,
-                'transaction' => $educash,
+                'client_id' => $client_ID_result,
+                'transaction' => $educash_added,
                 'amount' => $money,
                 'comments' => $adminComment
             ));
            }
         }
-    }    
+		}
+		}
+		
+		if ($_POST['SUBMIT']) {
+        if (empty($_POST['clientName1'])) {
+            $clientnamerr = "<span  style='color:red;'>* This field cannot be blank</span>";
+        } else {
+            $clientName = $_POST['clientName1'];
+            $check_client = $wpdb->get_var("SELECT COUNT(ID) from $users_table WHERE user_email = '$clientName' ");
+            if($check_client == 0){
+                $invalid_client = "<span style='color:red'>This client does not exist in our database</span>";
+            }
+        }
+        if (empty($_POST['educash1'])) {
+            $educasherr = "<span style='color:red;'>* This field cannot be blank</span>";
+        } else {
+            $educash = $_POST['educash1'];
+        }}
 //Form to allocate educash
 ?>
+<style>
+.modalbg {
+    display: none;
+	position:fixed;
+	top:0;
+	right:0;
+    z-index: 1;
+    padding-top: 100px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-contentbg {
+    background-color: #fefefe;
+	position:relative;
+	margin:auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 50%;
+	height:80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+.closebg {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.closebg:hover,
+.closebg:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-headerbg {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
+
+.modal-bodybg {padding: 2px 16px;}
+</style>
 <script>
     function validate_allotment_form() {
-    var x = document.forms["myForm"]["clientName"].value;
-    var y = document.forms["myForm"]["educash"].value;
-    var z = document.forms["myForm"]["money"].value; 
+    var x = document.getElementById("clientName11").value;
+    var y = document.getElementById("educash11").value;
+    var z = document.getElementById("money11").value; 
     if (x == "" && (y == "" || y == 0)) {
         document.getElementById('errmsg1').innerHTML = "* This field cannot be blank";
         document.getElementById('errmsg2').innerHTML = "* This field cannot be blank or 0";
@@ -63,29 +134,99 @@ function allocate_educash_form_page()
         document.getElementById('errmsg2').innerHTML = "* This field cannot be blank or 0";
         return false;
     }
-    if(z < 0) {
+    if (z < 0) {
         document.getElementById('errmsg3').innerHTML = "* This field cannot be negative";
+		return false;
     }
-    else {return confirm('Do you really want to submit this entry?');}
+	if(x != "" && y != 0 && z >= 0) {
+	    return true;
+	}      
+}
+    function validate_final_allotment_form(){
+    var x = document.getElementById("clientName22").value;
+    var y = document.getElementById("educash22").value;
+    var z = document.getElementById("money22").value; 
+    if (x == "" && (y == "" || y == 0)) {
+        document.getElementById('errmsgf1').innerHTML = "* This field cannot be blank";
+        document.getElementById('errmsgf2').innerHTML = "* This field cannot be blank or 0";
+        return false;
+    }
+    if (x == "") {
+        document.getElementById('errmsgf1').innerHTML = "* This field cannot be blank";
+        return false;
+    }
+    if (y == "" || y == 0) {
+        document.getElementById('errmsgf2').innerHTML = "* This field cannot be blank or 0";
+        return false;
+    }
+    if (z < 0) {
+        document.getElementById('errmsgf3').innerHTML = "* This field cannot be negative";
+		return false;
+    }
+	if(x != "" && y != 0 && z >= 0) {
+	    return confirm("Do you really want to submit this entry?");
+	}
 }
 </script>
-    <center><h2>Use this form to allocate educash to a client</h2><br/>
-    <form name="myForm" method='post' onsubmit="return validate_allotment_form()" action="<?php echo $_SERVER['REQUEST_URI'];?>">
-             Client Email (Type the Email Id of the client whom you want to allot educash):<br/><input type='text' id='input1' name='clientName' maxlength='100'>*<br/>
-                                                                                                <span style='color:red;' id='errmsg1'></span>
-                                                                                                <span><?php echo $clientnamerr; echo $invalid_client;?> </span>
+<div id='myModalbg' class="modalbg">
+    <div class="modal-contentbg">
+    <div class="modal-headerbg">
+      <span class="closebg">&times;</span>
+      <center><h2>You are about to make the follwing entry:</h2></center>
+    </div>
+    <div class="modal-bodybg">
+	
+<center><form name="myForm" method='post' onsubmit="return validate_final_allotment_form()" action="<?php echo $_SERVER['REQUEST_URI'];?>">
+             Client Email (Type the Email Id of the client whom you want to allot educash):<br/><input type='text' id='clientName22' name='clientName'
+                                 value = <?php echo $_POST['clientName1']; ?>			 maxlength='100'>*<br/>
+			                                                                                    <span style='color:red;' id='errmsgf1'></span>
                                                                                                 <br/><br/>
-             Type the educash to be added in the client's account:<br/><input type='number' id='input2' name='educash' min='-100000000' max='100000000'>*<br/>
-                                                                       <span style='color:red;' id='errmsg2'></span>
-                                                                       <span><?php echo $educasherr;?> </span>
+             Type the educash to be added in the client's account:<br/><input type='number' id='educash22' name='educash' min='-100000000' 
+			                      value = <?php echo $_POST['educash1']; ?>           max='100000000'>*<br/>
+																	   <span style='color:red;' id='errmsgf2'></span>
                                                                        <br/><br/>
-             Type the amount of money that the client has paid:<br/><input type='number' id='input3' name='money' min='-100000000' max='100000000'>*<br/>
-                                                                       <span style='color:red;' id='errmsg3'></span>
-                                                                       <span><?php echo $moneyerr;?> </span>
+             Type the amount of money that the client has paid:<br/><input type='number' id='money22' name='money' min='-100000000' 
+			                      value = <?php echo $_POST['money1']; ?>        max='100000000'>*<br/>
+																	   <span style='color:red;' id='errmsgf3'></span>
                                                                        <br/><br/>
-             Type your comments here (optional):<br/><textarea rows='4' cols='60' name='adminComment' maxlength='500'></textarea><br/><br/>
+             Type your comments here (optional):<br/><textarea rows='4' cols='60' id='adminComment22' name='adminComment' 
+			                          maxlength='500'> <?php echo $_POST['adminComment1']; ?> </textarea><br/><br/>
              <input type='submit' name='submit'><br/>
-             </form></center>
+</form></center>
+    </div>
+    </div>
+</div>
+    <center><form method='post' onsubmit = "return validate_allotment_form()" action="<?php echo $_SERVER['REQUEST_URI'];?>"><h2>Use this form to allocate educash to a client</h2><br/>
+             Client Email (Type the Email Id of the client whom you want to allot educash):<br/><input type='text' id='clientName11' name='clientName1' maxlength='100'>*<br/>
+                                                                                                <span style='color:red;' id='errmsg1'></span>
+																								<span><?php echo $clientnamerr; echo $invalid_client;?> </span>
+                                                                                                <br/><br/>
+             Type the educash to be added in the client's account:<br/><input type='number' id='educash11' name='educash1' min='-100000000' max='100000000'>*<br/>
+			                                                           <span><?php echo $educasherr;?> </span>
+                                                                       <span style='color:red;' id='errmsg2'></span>
+                                                                       <br/><br/>
+             Type the amount of money that the client has paid:<br/><input type='number' id='money11' name='money1' min='-100000000' max='100000000'>*<br/>
+                                                                       <span style='color:red;' id='errmsg3'></span>
+                                                                       <br/><br/>
+             Type your comments here (optional):<br/><textarea rows='4' cols='60' id='adminComment11' name='adminComment1' maxlength='500'></textarea><br/><br/>
+             <input type='submit' name='SUBMIT'><br/>
+            </form></center>
+<?php
+      if ($_POST['SUBMIT']) {
+        if ((!empty($_POST['clientName1'])) && (!empty($_POST['educash1'])) && (!($check_client == 0))) {
+			echo "<script>function display_dialogue(){var modal = document.getElementById('myModalbg');
+		 modal.style.display = 'block';					   
+         var spanbg = document.getElementsByClassName('closebg')[0];
+         spanbg.onclick = function() {
+         modal.style.display = 'none';
+        }
+        window.onclick = function(event) {
+        if (event.target == modal) {
+        modal.style.display = 'none';
+        }
+			}}
+	    display_dialogue();</script>";};}
+?>
 <?php
 //Displaying the transaction made just now if the values are legal and sending a mail to respective client otherwise displaying error message
     $client_display_name = $wpdb->get_var("SELECT display_name FROM $users_table WHERE user_email = '$clientName' ");
@@ -106,10 +247,10 @@ function allocate_educash_form_page()
         $edugorilla_email_datas2 = get_option('edugorilla_email_setting3');
         $arr1 = array("{Contact_Person}", "{ReceivedCount}", "{EduCashCount}", "{EduCashUrl}", "<pre>", "</pre>", "<code>", "</code>", "<b>", "</b>");
         $to = $clientName;
-        if($educash>0){
+        if($educash_added>0){
         $positive_email_subject = $edugorilla_email_datas['subject'];
         $subject =  $positive_email_subject;
-        $arr2 = array($client_display_name, $educash, $sum, "https://edugorilla.com/", "", "", "", "", "", "");
+        $arr2 = array($client_display_name, $educash_added, $sum, "https://edugorilla.com/", "", "", "", "", "", "");
         $positive_email_body = str_replace($arr1, $arr2, $edugorilla_email_datas['body']);
         $message =  $positive_email_body;
             
@@ -120,6 +261,7 @@ function allocate_educash_form_page()
         $pdf->AddPage();
         $pdf->Image("https://electronicsguide.000webhostapp.com/wp-content/uploads/2017/01/eg_logo.jpg",10,10,53.898305,60);
         $pdf->right_blocks(70, 25, 20, "EduGorilla");
+		$pdf->right_blocks(71, 35, 12, "U74999UP2016PTC088614");
         $pdf->addCompanyAddress("House No. 4719/A,\n".
                                 "Sector 23A,\n" .
                                 "Gurgaon - 122002,\n".
@@ -148,7 +290,7 @@ function allocate_educash_form_page()
         $y    = 157;
         $line = array( "ITEM"      => "EDUCASH",
                        "RATE"      => "Rs. 2/-",
-                       "QUANTITY"  => $educash,
+                       "QUANTITY"  => $educash_added,
                        "AMOUNT"    => "Rs. ".$money."/-");
         $size = $pdf->addLine( $y, $line );
         $y   += $size + 2;
@@ -187,9 +329,9 @@ function allocate_educash_form_page()
 	       
         $r = $wpdb->get_row("SELECT * FROM $table_name3 WHERE time = '$time' ");
         echo "<center></p>You have made the following entry just now:</p>";
-        echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
-        echo "<tr><td>" . $r->id . "</td><td>" . $adminName->user_email . "</td><td>" . $clientName . "</td><td>" . $r->transaction . "</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
-        echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+        echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
+        echo "<tr><td>" . $r->id . "</td><td>" . $adminName->user_email . "</td><td>" . $clientName . "</td><td>" . $r->transaction . "</td><td>".$r->amount."</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
+        echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
         echo "</table></center><br/><br/>";
       }
    }
@@ -242,15 +384,15 @@ function transaction_history_form_page()
                                             IF('$client_Name' != '', client_id = '$client_ID_result', 1=1)");
             echo "<center><span style='color:green;'>Total educash transactions are <b>" . $total . "</b></span>";
             echo "<p>The history of transactions is:</p>";
-            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             foreach ($results as $r) {
                 $Admin_Id = $r->admin_id;
                 $Client_Id = $r->client_id;
                 $admin_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Admin_Id' ");
                 $client_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Client_Id' ");
-                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
+                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>".$r->amount."</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
             }
-            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             echo "</table></center><br/>";
             }
       }
@@ -268,15 +410,15 @@ function transaction_history_form_page()
                                             IF('$client_Name' != '', client_id = '$client_ID_result', 1=1) AND DATE(time) BETWEEN '$date' AND '2050-12-31' ");
             echo "<center><span style='color:green;'>Total educash transactions are <b>" . $total . "</b></span>";
             echo "<p>The history of transactions is:</p>";
-            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             foreach ($results as $r) {
                 $Admin_Id = $r->admin_id;
                 $Client_Id = $r->client_id;
                 $admin_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Admin_Id' ");
                 $client_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Client_Id' ");
-                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
+                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>".$r->amount."</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
             }
-            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             echo "</table></center><br/>";
             }
       }
@@ -294,15 +436,15 @@ function transaction_history_form_page()
                                             IF('$client_Name' != '', client_id = '$client_ID_result', 1=1) AND DATE(time) BETWEEN 'TRUE' AND '$date2' ");
             echo "<center><span style='color:green;'>Total educash transactions are <b>" . $total . "</b></span>";
             echo "<p>The history of transactions is:</p>";
-            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             foreach ($results as $r) {
                 $Admin_Id = $r->admin_id;
                 $Client_Id = $r->client_id;
                 $admin_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Admin_Id' ");
                 $client_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Client_Id' ");
-                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
+                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>".$r->amount."</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
             }
-            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             echo "</table></center><br/>";
             }
       }
@@ -317,15 +459,15 @@ function transaction_history_form_page()
             $total = $wpdb->get_var("SELECT sum(transaction) FROM $table_name3 WHERE DATE(time) BETWEEN '$date' AND '2050-12-31' ");
             echo "<center><span style='color:green;'>Total educash transactions are <b>" . $total . "</b></span>";
             echo "<p>The history of transactions done from ".$_POST['date']." is:</p>";
-            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             foreach ($results as $r) {
                 $Admin_Id = $r->admin_id;
                 $Client_Id = $r->client_id;
                 $admin_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Admin_Id' ");
                 $client_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Client_Id' ");
-                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
+                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>".$r->amount."</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
             }
-            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             echo "</table></center><br/>";
             }
       }
@@ -340,15 +482,15 @@ function transaction_history_form_page()
             $total = $wpdb->get_var("SELECT sum(transaction) FROM $table_name3 WHERE DATE(time) BETWEEN 'TRUE' AND '$date2' ");
             echo "<center><span style='color:green;'>Total educash transactions are <b>" . $total . "</b></span>";
             echo "<p>The history of transactions done till ".$_POST['date2']." is:</p>";
-            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             foreach ($results as $r) {
                 $Admin_Id = $r->admin_id;
                 $Client_Id = $r->client_id;
                 $admin_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Admin_Id' ");
                 $client_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Client_Id' ");
-                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
+                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>".$r->amount."</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
             }
-            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             echo "</table></center><br/>";
             }
       }
@@ -363,15 +505,15 @@ function transaction_history_form_page()
             $total = $wpdb->get_var("SELECT sum(transaction) FROM $table_name3 WHERE DATE(time) BETWEEN '$date' AND '$date2' ");
             echo "<center><span style='color:green;'>Total educash transactions are <b>" . $total . "</b></span>";
             echo "<p>The history of transactions done from ".$_POST['date']." to ".$_POST['date2']." is:</p>";
-            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             foreach ($results as $r) {
                 $Admin_Id = $r->admin_id;
                 $Client_Id = $r->client_id;
                 $admin_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Admin_Id' ");
                 $client_email_result = $wpdb->get_var("SELECT user_email FROM $users_table WHERE ID = '$Client_Id' ");
-                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
+                echo "<tr><td>" . $r->id . "</td><td>" . $admin_email_result . "</td><td>" . $client_email_result . "</td><td>" . $r->transaction . "</td><td>".$r->amount."</td><td>" . $r->time . "</td><td>" . $r->comments . "</td></tr>";
             }
-            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Time</th><th>Comments</th></tr>";
+            echo "<tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
             echo "</table></center><br/>";
             }
       }
