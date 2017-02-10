@@ -9,6 +9,8 @@
 											email_id varchar(200) NOT NULL,
 											contact_no varchar(50) NOT NULL,
 											preferences varchar(100) NOT NULL,
+											location varchar(100) NOT NULL,
+											category varchar(100) NOT NULL,
 											PRIMARY KEY id (id)
 				  					    ) $charset_collate;";	
 
@@ -44,6 +46,8 @@ function edugorilla_client(){
 		$client_email = $_POST['client_email'];
 		$client_contact = $_POST['client_contact'];
 		$notification = $_POST['notification'];
+		$location = $_POST['location'];
+		$category = $_POST['category'];
 
 		/** Error Checking **/
 		$c_errors = array();
@@ -59,6 +63,12 @@ function edugorilla_client(){
 		elseif (filter_var($client_email, FILTER_VALIDATE_EMAIL) === false) $c_errors['client_email'] = "Invalid Email Id";
 
 		if(empty($notification)) $c_errors['notification'] = "Select any one option";
+
+		if (empty($location)) $c_errors['location'] = "Empty";
+		elseif (!preg_match("/([A-Za-z]+)/", $location)) $c_errors['location'] = "Invalid Name";
+
+		if (empty($category)) $c_errors['category'] = "Empty";
+		elseif (!preg_match("/([A-Za-z]+)/", $category)) $c_errors['category'] = "Invalid Name";
 
 		//Insert Data to table
 		if(empty($errors)){
@@ -103,6 +113,10 @@ function edugorilla_client(){
 			<tr><td><input type="radio" name="notification" value="Monthly_Digest">Monthly Digest<br/>
 				<font color="red"><?php echo $c_errors['notification']; ?></font>
 			</td></tr>
+			<tr><td>Location/State</td><td><input type="text" name="location">
+				<font color="red"><?php echo $c_errors['location']; ?></font></td></tr>
+			<tr><td>Category</td><td><input type="text" name="category">
+				<font color="red"><?php echo $c_errors['category']; ?></font></td></tr>
 			<tr><td><input type="submit" name="submit_client_pref"/></td></tr>
 		</table>
 	</form>
@@ -117,7 +131,7 @@ function edugorilla_client(){
 	add_action('mail_send_monthly','do_this_monthly');
 
 	function my_email_activation(){
-		$time_day =  date("y-m-d")." 5:00:00";
+		$time_day =  date("y-m-d")." 17:00:00";
 		$daily_time=strtotime($time_day);
 
 		$startdate = strtotime("Friday");
@@ -133,7 +147,7 @@ function edugorilla_client(){
 	function do_this_weekly() {
 	//do something weekly 
 	// send mail every week at 12PM on Friday
-		$edugorilla_email = get_option('edugorilla_email_setting1');
+		$edugorilla_email = get_option('email_setting_form_weekly');
 		$edugorilla_email_body = stripslashes($edugorilla_email['body']);
 		global $wpdb;
 		$table_name = $wpdb->prefix .'edugorilla_lead_details';
@@ -197,7 +211,7 @@ function edugorilla_client(){
 	function do_this_monthly() {
 		//do something every month
 		// send mail every month at 12PM on Friday
-		$edugorilla_email = get_option('edugorilla_email_setting1');
+		$edugorilla_email = get_option('email_setting_form_monthly');
 		$edugorilla_email_body = stripslashes($edugorilla_email['body']);
 		global $wpdb;
 		$table_name = $wpdb->prefix .'edugorilla_lead_details';
@@ -226,7 +240,6 @@ function edugorilla_client(){
 
 	}
 
-	register_deactivation_hook(__FILE__, 'my_deactivation');
 
 	function my_deactivation() {
 		wp_clear_scheduled_hook('mail_send_daily');
