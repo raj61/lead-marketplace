@@ -87,6 +87,8 @@ register_activation_hook(__FILE__,'my_email_activation');
 
 register_activation_hook(__FILE__, 'table_for_client');
 
+register_deactivation_hook(__FILE__, 'my_deactivation');
+
 function edugorilla_lead_plugin_uninstall()
 {
 	global $wpdb;
