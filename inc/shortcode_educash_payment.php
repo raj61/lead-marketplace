@@ -1,4 +1,3 @@
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <?php
   add_shortcode('educash_payment','educash_payment');
   function educash_payment($atts,$content = null)
