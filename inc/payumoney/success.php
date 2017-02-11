@@ -12,9 +12,9 @@ global $wpdb;
 
 
 session_start();
-if(isset($_POST['amount']) && isset($_POST['status']) && isset($_POST['txnid']) && isset($_POST['email']) && isset($_SESSION['userid']) && isset($_SESSION['rate']) && isset($_SESSION['allocation_page']))
+if(isset($_POST['amount']) && isset($_POST['status']) && isset($_POST['txnid']) && isset($_POST['email']) && isset($_SESSION['userid']) && isset($_SESSION['rate']))
 {
-  if(!empty($_POST['amount']) && !empty($_POST['status']) && !empty($_POST['txnid']) && !empty($_POST['email']) && !empty($_SESSION['userid']) && !empty($_SESSION['rate']) && !empty($_SESSION['allocation_page']))
+  if(!empty($_POST['amount']) && !empty($_POST['status']) && !empty($_POST['txnid']) && !empty($_POST['email']) && !empty($_SESSION['userid']) && !empty($_SESSION['rate']))
   {
 
     $status=$_POST["status"];
@@ -23,7 +23,6 @@ if(isset($_POST['amount']) && isset($_POST['status']) && isset($_POST['txnid']) 
     $email=$_POST["email"];
     $userid = $_SESSION["userid"];
     $rate = $_SESSION["rate"];
-    $allocation_page = $_SESSION['allocation_page'];
     $educash = $amount/$rate;
           if($status == "success"){
 
@@ -33,11 +32,11 @@ if(isset($_POST['amount']) && isset($_POST['status']) && isset($_POST['txnid']) 
               $email_body = str_replace("{educash}", $educash, $email_body);
               $to = $email;
               $headers = array('Content-Type: text/html; charset=UTF-8');
-              $status = wp_mail($to,$email_subject,$email_body,$headers);
+              $value = wp_mail($to,$email_subject,$email_body,$headers);
 
 
               $eduCashHelper = new EduCash_Helper();
-              //$eduCashHelper->addEduCashToUser();
+              $eduCashHelper->addEduCashToUser();
 
               echo "<h3>Thank You. Your order status is ". $status .".</h3>";
               echo "<h4>Your Transaction ID for this transaction is ".$txnid.".</h4>";

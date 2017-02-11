@@ -19,10 +19,6 @@ if(isset($_POST['userid']) &&isset($_POST['rate'])){
   }
 }
 
-if(isset($_POST['allocation_page']) &&!empty($_POST['allocation_page'])){
-  $_SESSION['allocation_page']=$_POST['allocation_page'];
-}
-
 $action = '';
 
 $posted = array();
