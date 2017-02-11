@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 // End point - change to https://secure.payu.in for LIVE mode
 $PAYU_BASE_URL = "https://test.payu.in";
 
@@ -11,8 +11,13 @@ $PAYU_BASE_URL = "https://test.payu.in";
     $SALT = $_POST['saltid'];//"ddKr3Wsb";
 
 
-if(isset($_POST['rate']) && !empty($_POST['rate']))
-  $_POST['amount']=$_POST['amount']*$_POST['rate'];
+if(isset($_POST['userid']) &&isset($_POST['rate'])){
+  if(!empty($_POST['userid']) && !empty($_POST['rate'])){
+    $_POST['amount']=$_POST['amount']*$_POST['rate'];
+    $_SESSION['rate']=$_POST['rate'];
+    $_SESSION['userid']=$_POST['userid'];
+  }
+}
 
 $action = '';
 

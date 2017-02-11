@@ -4,9 +4,9 @@ function allocate_educash_form_page()
     global $wpdb;
     $table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_transactions';
     $users_table = $wpdb->prefix.users;
-    
+
 //Checking if the admin has filled adequate information to submit the form to allot educash and inserting the legal values in table
-    
+
 		if ($_POST['submit']) {
 			$clientName = $_POST['clientName'];
             $check_client = $wpdb->get_var("SELECT COUNT(ID) from $users_table WHERE user_email = '$clientName' ");
@@ -15,7 +15,7 @@ function allocate_educash_form_page()
             }
 			else{
 		    if (empty($_POST['educash'])) {
-            echo '<script>alert("The field of educash cnnot be blank");</script>';
+            echo '<script>alert("The field of educash cannot be blank");</script>';
             } else {
             $educash_added = $_POST['educash'];
             $client_ID_result = $wpdb->get_var("SELECT ID FROM $users_table WHERE user_email = '$clientName' ");
@@ -38,7 +38,7 @@ function allocate_educash_form_page()
         }
 		}
 		}
-		
+
 		if ($_POST['SUBMIT']) {
         if (empty($_POST['clientName1'])) {
             $clientnamerr = "<span  style='color:red;'>* This field cannot be blank</span>";
@@ -85,7 +85,7 @@ function allocate_educash_form_page()
 }
 
 @-webkit-keyframes animatetop {
-    from {top:-300px; opacity:0} 
+    from {top:-300px; opacity:0}
     to {top:0; opacity:1}
 }
 
@@ -120,7 +120,7 @@ function allocate_educash_form_page()
     function validate_allotment_form() {
     var x = document.getElementById("clientName11").value;
     var y = document.getElementById("educash11").value;
-    var z = document.getElementById("money11").value; 
+    var z = document.getElementById("money11").value;
     if (x == "" && (y == "" || y == 0)) {
         document.getElementById('errmsg1').innerHTML = "* This field cannot be blank";
         document.getElementById('errmsg2').innerHTML = "* This field cannot be blank or 0";
@@ -140,12 +140,12 @@ function allocate_educash_form_page()
     }
 	if(x != "" && y != 0 && z >= 0) {
 	    return true;
-	}      
+	}
 }
     function validate_final_allotment_form(){
     var x = document.getElementById("clientName22").value;
     var y = document.getElementById("educash22").value;
-    var z = document.getElementById("money22").value; 
+    var z = document.getElementById("money22").value;
     if (x == "" && (y == "" || y == 0)) {
         document.getElementById('errmsgf1').innerHTML = "* This field cannot be blank";
         document.getElementById('errmsgf2').innerHTML = "* This field cannot be blank or 0";
@@ -175,21 +175,21 @@ function allocate_educash_form_page()
       <center><h2>You are about to make the follwing entry:</h2></center>
     </div>
     <div class="modal-bodybg">
-	
+
 <center><form name="myForm" method='post' onsubmit="return validate_final_allotment_form()" action="<?php echo $_SERVER['REQUEST_URI'];?>">
              Client Email (Type the Email Id of the client whom you want to allot educash):<br/><input type='text' id='clientName22' name='clientName'
                                  value = <?php echo $_POST['clientName1']; ?>			 maxlength='100'>*<br/>
 			                                                                                    <span style='color:red;' id='errmsgf1'></span>
                                                                                                 <br/><br/>
-             Type the educash to be added in the client's account:<br/><input type='number' id='educash22' name='educash' min='-100000000' 
+             Type the educash to be added in the client's account:<br/><input type='number' id='educash22' name='educash' min='-100000000'
 			                      value = <?php echo $_POST['educash1']; ?>           max='100000000'>*<br/>
 																	   <span style='color:red;' id='errmsgf2'></span>
                                                                        <br/><br/>
-             Type the amount of money that the client has paid:<br/><input type='number' id='money22' name='money' min='-100000000' 
+             Type the amount of money that the client has paid:<br/><input type='number' id='money22' name='money' min='-100000000'
 			                      value = <?php echo $_POST['money1']; ?>        max='100000000'>*<br/>
 																	   <span style='color:red;' id='errmsgf3'></span>
                                                                        <br/><br/>
-             Type your comments here (optional):<br/><textarea rows='4' cols='60' id='adminComment22' name='adminComment' 
+             Type your comments here (optional):<br/><textarea rows='4' cols='60' id='adminComment22' name='adminComment'
 			                          maxlength='500'> <?php echo $_POST['adminComment1']; ?> </textarea><br/><br/>
              <input type='submit' name='submit'><br/>
 </form></center>
@@ -215,7 +215,7 @@ function allocate_educash_form_page()
       if ($_POST['SUBMIT']) {
         if ((!empty($_POST['clientName1'])) && (!empty($_POST['educash1'])) && (!($check_client == 0))) {
 			echo "<script>function display_dialogue(){var modal = document.getElementById('myModalbg');
-		 modal.style.display = 'block';					   
+		 modal.style.display = 'block';
          var spanbg = document.getElementsByClassName('closebg')[0];
          spanbg.onclick = function() {
          modal.style.display = 'none';
@@ -253,11 +253,11 @@ function allocate_educash_form_page()
         $arr2 = array($client_display_name, $educash_added, $sum, "https://edugorilla.com/", "", "", "", "", "", "");
         $positive_email_body = str_replace($arr1, $arr2, $edugorilla_email_datas['body']);
         $message =  $positive_email_body;
-            
+
 //Creating invoice
-            
+
         require('pdf_library/invoice_functions.php');
-        $pdf = new PDF_Invoice( 'P', 'mm', 'A4' );                                 
+        $pdf = new PDF_Invoice( 'P', 'mm', 'A4' );
         $pdf->AddPage();
         $pdf->Image("https://electronicsguide.000webhostapp.com/wp-content/uploads/2017/01/eg_logo.jpg",10,10,53.898305,60);
         $pdf->right_blocks(70, 25, 20, "EduGorilla");
@@ -297,13 +297,13 @@ function allocate_educash_form_page()
         $pdf->left_blocks(80, 200, "TOTAL: ");
         $pdf->left_blocks(80, 220, "PAYMENT MADE: ");
         $pdf->left_blocks(80, 240, "BALANCE DUE: ");
-		
+
 		$pdf->left_blocks(40, 200, "Rs. ".$money."/-");
         $pdf->left_blocks(40, 220, "Rs. ".$money."/-");
         $pdf->left_blocks(40, 240, "Rs. 0/-");
         $pdf->right_blocks(25, 200, 16, "Thanks For Your Business");
 
-		
+
 		$eol = PHP_EOL;
 		$file_name = sys_get_temp_dir();
 		$file_name.= "/invoice.pdf";
@@ -314,7 +314,7 @@ function allocate_educash_form_page()
 		$headers[] = "From: ".$from.$eol;
 		$headers[] = "MIME-Version: 1.0".$eol;
 		$headers[] = "Content-Type: text/html;";
-		
+
 		wp_mail( $to, $subject, $message, $headers, $attachment);
         }
         else{
@@ -326,7 +326,7 @@ function allocate_educash_form_page()
         $message =  $negative_email_body;
 		 wp_mail($to, $subject, $message);
         }
-	       
+
         $r = $wpdb->get_row("SELECT * FROM $table_name3 WHERE time = '$time' ");
         echo "<center></p>You have made the following entry just now:</p>";
         echo "<table class='widefat fixed' cellspacing='0'><tr><th>Id</th><th>Admin Email</th><th>Client Email</th><th>Educash transaction</th><th>Amount</th><th>Time</th><th>Comments</th></tr>";
@@ -341,17 +341,17 @@ function transaction_history_form_page()
     global $wpdb;
     $table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_transactions';
     $users_table = $wpdb->prefix.users;
-    
-//Checking if the admin has filled atleast one field to submit the form to see history 
-    
+
+//Checking if the admin has filled atleast one field to submit the form to see history
+
     if ($_POST['Submit']) {
         if (empty($_POST['admin_Name']) && empty($_POST['client_Name']) && empty($_POST['date']) && empty($_POST['date2'])) {
             $all_four_error = "<span style='color:red;'> * All four fields cannot be blank</span>";
         }
     }
-    
+
 //Form to see history of educash transactions
-    
+
     echo "<center><h2>Use this form to know the history of educash transactions</h2>";
     echo "<p style='color:green;'>Fill atleast one field<p>";
     echo "<form method='post' action='" . $_SERVER['REQUEST_URI'] . "'>
@@ -361,15 +361,15 @@ function transaction_history_form_page()
              Date To: <input type='date' name='date2' min='1990-12-31' max='2050-12-31'><br/><br/>
              <input type='submit' name='Submit'><br/>" . $all_four_error . "<br/><br/><br/>
              </form></center>";
-    
+
 //Displaying the history of required fields
-    
+
        $admin_Name = $_POST['admin_Name'];
-       $client_Name = $_POST['client_Name']; 
+       $client_Name = $_POST['client_Name'];
        $admin_ID_result = $wpdb->get_var("SELECT ID FROM $users_table WHERE user_email = '$admin_Name' ");
        $client_ID_result = $wpdb->get_var("SELECT ID FROM $users_table WHERE user_email = '$client_Name' ");
        $date = $_POST['date'];
-       $date2 = $_POST['date2'];    
+       $date2 = $_POST['date2'];
     if (($_POST['Submit']))
           if((!empty($_POST['admin_Name']) || !empty($_POST['client_Name'])) && empty($_POST['date']) && empty($_POST['date2'])) {
             $check_result = $wpdb->get_var("SELECT COUNT(ID) FROM $table_name3  WHERE IF('$admin_Name' != '', admin_id = '$admin_ID_result', 1=1) AND

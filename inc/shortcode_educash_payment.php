@@ -4,24 +4,25 @@
   {
       if(is_user_logged_in())
       {
+
         global $current_user;
         get_currentuserinfo();
         $out = get_option("current_rate");
+        $conversion=0;
         $conversion=$out['rate'];
         $credentials = get_option("payumoney_parameters");
         $background = plugins_url('payumoney/background.png',__FILE__);
-
         $next_page = plugins_url('payumoney/PayUMoney_form.php',__FILE__);
         $redirect_url = plugins_url('payumoney/success.php',__FILE__);
         $payumoney_logo = plugins_url('payumoney/PayUMoney_logo.png',__FILE__);
         $netbanking_logo = plugins_url('payumoney/netbanking.png',__FILE__);
-
         ?>
 
         <div class="pay_card" ng-app="" ng-init="amount='0';" style="background-image: url("<?php echo $background;?>");">
           <div class ="pay_card2">
             <form name="tranaction_form" method="post" action="">
-
+              <input name="userid" id="userid" value="<?php echo $current_user->id; ?>" type="hidden" />
+              <input name="allocation_page" id="allocation_page" value="<?php echo $allocation_page; ?>" type="hidden" />
               <input name="email" id="email" value="<?php echo $current_user->user_email; ?>" type="hidden" />
               <input name="firstname" id="firstname" value="<?php echo $current_user->user_firstname; ?>" type="hidden" />
               <input name="lastname" id="lastname" value="<?php echo $current_user->user_lastname; ?>" type="hidden" />
