@@ -1,4 +1,3 @@
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <?php
   add_shortcode('educash_payment','educash_payment');
   function educash_payment($atts,$content = null)
@@ -13,8 +12,6 @@
         $conversion=$out['rate'];
         $credentials = get_option("payumoney_parameters");
         $background = plugins_url('payumoney/background.png',__FILE__);
-        $allocation_page = plugins_url('',__FILE__);
-        $allocation_page = str_replace('inc','frontend/class-EduCash-Helper.php',$allocation_page);
         $next_page = plugins_url('payumoney/PayUMoney_form.php',__FILE__);
         $redirect_url = plugins_url('payumoney/success.php',__FILE__);
         $payumoney_logo = plugins_url('payumoney/PayUMoney_logo.png',__FILE__);
@@ -26,7 +23,6 @@
             <form name="tranaction_form" method="post" action="">
               <input name="userid" id="userid" value="<?php echo $current_user->id; ?>" type="hidden" />
               <input name="allocation_page" id="allocation_page" value="<?php echo $allocation_page; ?>" type="hidden" />
-              <input name="page" id="page" value="<?php ?>" type="hidden" />
               <input name="email" id="email" value="<?php echo $current_user->user_email; ?>" type="hidden" />
               <input name="firstname" id="firstname" value="<?php echo $current_user->user_firstname; ?>" type="hidden" />
               <input name="lastname" id="lastname" value="<?php echo $current_user->user_lastname; ?>" type="hidden" />
