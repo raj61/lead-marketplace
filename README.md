@@ -70,6 +70,30 @@ The following shortcodes are currently supported by this project :
 1. [transaction_history]- This page can be used to view the current client's EduCash Trasncation history
 1. [client_preference_form] - This is to be used by the clients to enter their details and subscribe for email notifications.
 
+### Admin Menus:
+
+The following menus will be available in the admin page after the plugin is installed : 
+
+1. Lead capture form - This is the main form that is used to add new Leads to our system
+1. Sent Leads - This form shows you Promotional/Bought leads that are sent to the customers
+1. OTP- This is used for debugging purposes to get the OTP to mobile number
+1. Template of Email - This is to be used by the operations team to edit the template of the email sent to customers
+1. Template of SMS - This is to be used by the operations team to edit the template of the SMS sent to customers
+1. Allocate EduCash - This can be used to allocate new EduCash to our customers
+1. Transaction History - An UI to see the transaction history for any customer
+1. Third Party Settings - Misc Admin settings that are used to communicate with third party APIs.
+
+
+### Database Tables Used:
+
+The following tables will be added to the database after the plugin is installed : 
+
+1. edugorilla_lead_details - The table containing all the leads.
+1. edugorilla_lead_contact_log - Logs when the leads were contacted.
+1. edugorilla_lead_educash_transactions - Transaction history for EduCash.
+1. edugorilla_lead_client_mapping - Mapping between client id and lead id.
+1. edugorilla_educash_conversion_ratio - Mapping between educash and other currencies.
+
 # Scope of project:
 
 We will contribute this project back to Open Source Repository i.e. a Wordpress Plugin or even host in CodeCanyon.

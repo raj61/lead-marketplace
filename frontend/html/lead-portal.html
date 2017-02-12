@@ -11,19 +11,19 @@
 			<!-- <input type="checkbox" checked data-toggle="toggle" name="show_all">Show All</br> -->
 			<div class="show_hidden">
 				<label class="switch">
-					<input type="checkbox" ng-model="user_hidden">
+					<input type="checkbox" ng-model="user_hidden" ng-click="reCalcCounts()">
 					<div class="slider round"></div>
 				</label>
 				<p>Show Hidden</p>
 			</div>
 			<div class="show_hidden">
 				<label class="switch">
-					<input type="checkbox" ng-model="user_purchased">
+					<input type="checkbox" ng-model="user_purchased" ng-click="reCalcCounts()">
 					<div class="slider round"></div>
 				</label>
 				<p>Purchased Leads</p>
 			</div>
-			<h6 class="ref_heading"> Refine: </h6>
+			<h4 class="ref_heading"> Refine: </h4>
 			<hr>
             <h6 class="ref_heading">By Category : </h6>
             <ul class="refine">
@@ -61,7 +61,7 @@
 						</div>
 					</div>
 					<div class="content col-sm-12">
-						<h6>Interested in</h6>
+						<h6>Query</h6>
 						<p>{{card.query}}</p>
 						<p ng-if="card.isUnlocked">Email : {{card.email}}</p>
 						<p ng-if="card.isUnlocked">Contact : {{card.contact_no}}</p>

@@ -27,7 +27,7 @@
 					}
 				}
 				return false;
-			}
+			};
 			$scope.userSelectedLocations = [];
 			$scope.userSelectedCategories = [];
 			$scope.setSelectedCategories = function(prop){
@@ -95,16 +95,16 @@
 			$scope.cards = [];
 			$scope.topLocations = [];
 			$scope.topCategories = [];
-			function populateScopevariablesFromAPI(data) {
+			$scope.reCalcCounts = function(){
 				var locationArray = {};
 				var categoryArray = {};
-				for (var index = 0; index < data.length; ++index) {
-					var card = data[index].lead_card;
-					if (card.locationId == -1) {
-						card.locationName = "UnknownLocation";
-					}
-					if (card.categoryId == -1) {
-						card.categoryName = "UnknownCategory";
+				$scope.topLocations.length = 0;
+				$scope.topCategories.length = 0;
+				var allCards = $scope.cards;
+				for (var index = 0; index < allCards.length; ++index) {
+					var card = allCards[index];
+					if(!$scope.cardSelectionCriteria(card)) {
+						continue;
 					}
 					var locationCount = ++locationArray[card.locationName];
 					var catergoryCount = ++categoryArray[card.categoryName];
@@ -124,7 +124,7 @@
 						catId: card.categoryId,
 						Count: catergoryCount
 					};
-					$scope.cards.push(card);
+
 					var isExistingLocation = false;
 					var isExistingCategory = false;
 					for (var i = 0; i < $scope.topLocations.length; i++) {
@@ -146,6 +146,19 @@
 						$scope.topCategories.push(currentCategory);
 					}
 				}
+			};
+			function populateScopevariablesFromAPI(data) {
+				for (var index = 0; index < data.length; ++index) {
+					var card = data[index].lead_card;
+					if (card.locationId == -1) {
+						card.locationName = "Unknown Location";
+					}
+					if (card.categoryId == -1) {
+						card.categoryName = "Unknown Category";
+					}
+					$scope.cards.push(card);
+				}
+				$scope.reCalcCounts();
 			};
 			function detailSuccessCallback(response) {
 				//success code

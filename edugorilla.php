@@ -126,7 +126,7 @@ function create_edugorilla_menus()
 
 	add_submenu_page(
 		'edugorilla',
-		'Lead Marketplace',
+		'Lead Marketplace | Lead capture form',
 		'Lead capture form',
 		'read',
 		'edugorilla',
@@ -207,8 +207,8 @@ function create_edugorilla_menus()
 
     add_submenu_page(
 		'edugorilla',
-		'Settings',
-		'Settings',
+		'Lead Marketplace | Third Party Settings',
+		'Third Party Settings',
 		'manage_options',
 		'edugorilla-settings',
 		'edugorilla_settings'
