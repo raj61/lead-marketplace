@@ -58,9 +58,9 @@ function edugorilla_settings()
   <div id="tabs">
 
     <ul>
-      <li><h2><a href="#tabs-1">Gupshup Credentials</a></h2></li>
-      <li><h2><a href="#tabs-2">PayUMoney Credentials</a></h2></li>
-    </ul></br></br>
+      <li><a href="#tabs-1">Gupshup Credentials</a></li>
+      <li><a href="#tabs-2">PayUMoney Credentials</a></li>
+    </ul>
 
     <div id="tabs-1">
         <?php
@@ -89,7 +89,7 @@ function edugorilla_settings()
         }
         ?>
         <div class="wrap">
-            <h1>Ghupshup Credentials</h1></br>
+            <h1>Ghupshup Credentials</h1>
             <form method="post">
                 <table>
                     <tr>
@@ -116,19 +116,22 @@ function edugorilla_settings()
       </div>
     <div id="tabs-2">
       <div class="wrap">
-          <h1>PayUMoney Credentials</h1><br>
+          <h1>PayUMoney Credentials</h1></br>
+          <?php
+          $out = get_option("payumoney_parameters");
+         ?>
           <form method="post" action="">
               <table>
                   <tr>
                       <th>Salt Id</th>
                       <td>
-                          <input type="text" name="salt" /></br>
+                          <input type="text" name="salt" value="<?php echo $out['user_id'] ?>"/></br>
                       </td>
                   </tr>
                   <tr>
                       <th>Merchant Id</th>
                       <td>
-                          <input type="text" name="mcid"/></br></br>
+                          <input type="text" name="mcid" value="<?php echo $out['password'];?>"/></br></br>
                       </td>
                   </tr>
                   <tr>
@@ -166,9 +169,7 @@ function edugorilla_settings()
           $success = "Saved Successfully";
 
           echo"<h2>Your salt and merchant id are successfully recieved. Now you can go ahead and continue with transactions</h2>";
-          $out = get_option("payumoney_parameters");
-         echo $out['user_id'];
-         echo $out['password'];
+
         }
         else{
           echo "<h2>Please fill salt and test key properly </h2><br><br>";
