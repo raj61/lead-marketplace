@@ -141,13 +141,13 @@ function edugorilla_settings()
           </form>
           </div></br></br>
           <div class="wrap">
-          <h1>Conversion Rate</h1><br>
+          <h1>Conversion Rate - Rs</h1><br>
             <form method="post" action="">
                 <table>
                     <tr>
                         <th>New Rate</th>
                         <td>
-                            <input type="number" name="rate"/></br></br>
+                            <input type="number" name="rate"/> rs</br></br>
                         </td>
                     </tr>
                     <tr>
@@ -193,7 +193,45 @@ function edugorilla_settings()
              $out = get_option("current_rate");
             echo $out['rate']; ?> Rs</td>
         </tr>
-      </table>
+    </table><br></br>
+
+
+      <div class="wrap">
+      <h1>Conversion Rate - Karma</h1><br>
+        <form method="post" action="">
+            <table>
+                <tr>
+                    <th>New Rate</th>
+                    <td>
+                        <input type="number" name="karma"/> karmas.</br></br>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="submit" class="button button-primary" value="Save"></td>
+                </tr>
+            </table>
+        </form>
+      </div>
+
+      <?php
+      if (isset($_POST['karma']))
+      {
+        if(!empty($_POST['karma']))
+          {
+            $credentials3 = array("rate"=>$_POST['karma']);
+            update_option("karma_rate",$credentials3);
+          }
+      } ?>
+
+      <table>
+        <tr>
+          <th>Current Rate = </th>
+            <td>1 educash for <?php
+             $out = get_option("karma_rate");
+            echo $out['rate']; ?> karmas</td>
+        </tr>
+    </table><br></br>
+
     </div>
   <?php
   }
