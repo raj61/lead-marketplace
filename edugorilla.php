@@ -4,10 +4,8 @@
  * Description: A platform to manage all the leads on Website.
  * Version: Alpha release
  * Author: EduGorilla Tech Team
- * Author URI: https://github.com/rohitmanglik/lead-marketplace
+ * Author URI: https://github.com/EduGorilla/lead-marketplace
  **/
-require_once(plugin_dir_path(__FILE__) . 'frontend/class-Lead-Card.php'); /*Cards used for displaying leads */
-require_once(plugin_dir_path(__FILE__) . 'frontend/class-Custom-Lead-API.php'); /*API to be used for displaying leads */
 
 function create_edugorilla_lead_table()
 {
@@ -20,7 +18,10 @@ function create_edugorilla_lead_table()
                                             contact_no varchar(50) NOT NULL,
                                             email varchar(200) NOT NULL,
                                             query text(500) NOT NULL,
+                                            is_promotional text(500) NOT NULL,
+                                            listing_type text(500) NOT NULL,
                                             category_id text(500) NOT NULL,
+                                            keyword text(500) NOT NULL,
                                             location_id varchar(200) NOT NULL,
                                             date_time varchar(200) NOT NULL,
                                             PRIMARY KEY id (id)
@@ -45,6 +46,7 @@ function create_edugorilla_lead_table()
                                             admin_id int(9) NOT NULL,
                                             client_id int(9) NOT NULL,
                                             transaction int(9) DEFAULT 0 NOT NULL,
+                                            amount int(9) DEFAULT 0 NOT NULL,
                                             time datetime NOT NULL,
                                             comments varchar(500) DEFAULT 'No comment' NOT NULL,
                                             PRIMARY KEY  (id)
@@ -57,8 +59,19 @@ function create_edugorilla_lead_table()
 											lead_id int(15) NOT NULL,
 											is_unlocked boolean DEFAULT 0 NOT NULL,
                                             is_hidden boolean DEFAULT 0 NOT NULL,
-						                    date_time datetime NOT NULL,
+						                    date_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 									        operation SMALLINT(1) NOT NULL DEFAULT '1'
+				  					    ) $charset_collate;";
+
+	$table_name5 = $wpdb->prefix . 'edugorilla_educash_conversion_ratio'; //Mapping between educash and other currencies
+	$sql5 = "CREATE TABLE $table_name5 (
+				                            id int(15) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+											edu_cash double NOT NULL DEFAULT 1,
+											karma double NOT NULL DEFAULT 1,
+											rupees double NOT NULL DEFAULT 1,
+											leads double NOT NULL DEFAULT 1,
+											modification_time DATETIME ON UPDATE CURRENT_TIMESTAMP
+									        PRIMARY KEY  (id)
 				  					    ) $charset_collate;";
 
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -67,10 +80,35 @@ function create_edugorilla_lead_table()
 	dbDelta($sql2);
 	dbDelta($sql3);
 	dbDelta($sql4);
+	dbDelta($sql5);
 
 }
 
 register_activation_hook(__FILE__, 'create_edugorilla_lead_table');
+
+register_activation_hook(__FILE__,'my_email_activation');
+
+register_activation_hook(__FILE__, 'table_for_client');
+
+function edugorilla_lead_plugin_uninstall()
+{
+	global $wpdb;
+	$table_name1 = $wpdb->prefix . 'edugorilla_lead_details';
+	$table_name2 = $wpdb->prefix . 'edugorilla_lead_contact_log';
+	$table_name3 = $wpdb->prefix . 'edugorilla_lead_educash_transactions';
+	$table_name4 = $wpdb->prefix . 'edugorilla_lead_client_mapping';
+	$table_name5 = $wpdb->prefix . 'edugorilla_educash_conversion_ratio';
+	$table_name6 = $wpdb->prefix . 'edugorilla_client_preferences';
+	$wpdb->query("DROP TABLE IF EXISTS $table_name1");
+	$wpdb->query("DROP TABLE IF EXISTS $table_name2");
+	$wpdb->query("DROP TABLE IF EXISTS $table_name3");
+	$wpdb->query("DROP TABLE IF EXISTS $table_name4");
+	$wpdb->query("DROP TABLE IF EXISTS $table_name5");
+	$wpdb->query("DROP TABLE IF EXISTS $table_name6");
+}//end pluginUninstall function
+
+//hook into WordPress when its being deactivated, uncommenting the following line will cause data loss
+//register_deactivation_hook(__FILE__, 'edugorilla_lead_plugin_uninstall');
 
 add_action("admin_menu", "create_edugorilla_menus");
 
@@ -121,6 +159,15 @@ function create_edugorilla_menus()
 	);
 
 	add_submenu_page(
+		'edugorilla',
+		'Lead Marketplace | Template of SMS',
+		'Template of SMS',
+		'read',
+		'edugorilla-sms-setting',
+		'edugorilla_sms_setting'
+	);
+
+	add_submenu_page(
 		'',
 		'Lead Marketplace | Edit Lead',
 		'Promotion Sent Edit',
@@ -146,7 +193,7 @@ function create_edugorilla_menus()
 		'allocate_educash_form_page',
 		'allocate_educash_form_page'
 	);
-    
+
     add_submenu_page(
 		'edugorilla',
 		'Lead Marketplace | Transaction History',
@@ -169,7 +216,15 @@ function create_edugorilla_menus()
 include_once plugin_dir_path(__FILE__) . "view.php";
 include_once plugin_dir_path(__FILE__) . "edit.php";
 include_once plugin_dir_path(__FILE__) . "otp.php";
+include_once plugin_dir_path(__FILE__) . "sms_setting.php";
 include_once plugin_dir_path(__FILE__) . "educash_allotment_and_history.php";
+include_once plugin_dir_path(__FILE__) . 'frontend/class-Lead-Card.php'; /*Cards used for displaying leads */
+include_once plugin_dir_path(__FILE__) . 'frontend/class-Custom-Lead-API.php'; /*API to be used for displaying leads */
+include_once plugin_dir_path(__FILE__) . 'frontend/class-EduCash-Helper.php'; /*Utility class used for dealing with EduCash */
+include_once plugin_dir_path(__FILE__) . 'database/class-DataBase-Helper.php'; /*Utility class used for dealing with Database */
+include_once plugin_dir_path(__FILE__) . "send_email_to_client.php";
+
+
 
 function edugorilla()
 {
@@ -181,6 +236,8 @@ function edugorilla()
 		$contact_no = $_POST['contact_no'];
 		$keyword = $_POST['keyword'];
 		$email = $_POST['email'];
+		$is_promotional_lead = $_POST['is_promotional_lead'];
+		$listing_type = $_POST['listing_type'];
 		$query = $_POST['query'];
 		$category_id = $_POST['category_id'];
 		$location_id = $_POST['location'];
@@ -203,9 +260,12 @@ function edugorilla()
 
 		if (empty($errors)) {
 			$institute_emails_status = array();
+			$institute_sms_status = array();
 
 			if (!empty($category_id)) $category = implode(",", $category_id);
-			else $category = "";
+			else $category = "-1";
+
+			if (empty($location_id)) $location_id = "-1";
 
 			$json_results = json_decode(stripslashes($edugorilla_institute_datas));
 
@@ -222,6 +282,9 @@ function edugorilla()
 					'contact_no' => $contact_no,
 					'email' => $email,
 					'query' => $query,
+					'is_promotional' => $is_promotional_lead,
+					'listing_type' => $listing_type,
+					'keyword' => $keyword,
 					'category_id' => $category,
 					'location_id' => $location_id,
 					'date_time' => current_time('mysql')
@@ -260,6 +323,7 @@ function edugorilla()
 						$edugorilla_email_body = str_replace($var, $email_template_data, $edugorilla_email_body);
 					}
 
+					$institute_send_emails_status = send_mail($edugorilla_email_subject, $edugorilla_email_body);
 
 					$institute_emails = explode(",", $json_result->emails);
 					foreach ($institute_emails as $institute_email) {
@@ -269,6 +333,15 @@ function edugorilla()
 							$institute_emails_status[$institute_email] = wp_mail($institute_email, $edugorilla_email_subject, ucwords($edugorilla_email_body));
 
 						remove_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type');
+
+					}
+
+					$institute_phones = explode(",", $json_result->phones);
+					include_once plugin_dir_path(__FILE__) . "api/gupshup-api.php";
+					foreach ($institute_phones as $institute_phone) {
+						$smsapi = get_option("smsapi");
+						$msg = str_replace("{Contact_Person}", $json_result->contact_person, $smsapi['message']);
+						$institute_sms_status[$institute_phone] = send_sms($smsapi['username'],$smsapi['password'],$institute_phone,$msg);
 					}
 
 					$contact_log_id = $wpdb->insert_id;
@@ -279,6 +352,7 @@ function edugorilla()
 							'contact_log_id' => $contact_log_id,
 							'post_id' => $json_result->post_id,
 							'email_status' => json_encode($institute_emails_status),
+							'sms_status' => json_encode($institute_sms_status),
 							'date_time' => current_time('mysql')
 						)
 					);
@@ -670,6 +744,8 @@ include_once plugin_dir_path(__FILE__) . "list.php";
 
 include_once plugin_dir_path(__FILE__) . "inc/shortcode_transaction_history.php";
 
+include_once plugin_dir_path(__FILE__) . "inc/shortcode_educash_payment.php";
+
 function edugorilla_shortcode_require()
 {
 	// for bootstrap 4.0 to work
@@ -677,8 +753,8 @@ function edugorilla_shortcode_require()
 	wp_enqueue_script('ajaxlib1', 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js');
 	wp_enqueue_script('ajaxlib2', 'https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js');
 	wp_enqueue_script('bootjs', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js');
-	wp_enqueue_script('angularJs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js');
-	wp_enqueue_script('angularAnimate', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js');
+	wp_enqueue_script('angularJs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js');
+	wp_enqueue_script('angularAnimate', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.js');
 
 	wp_enqueue_style('custom_css', plugins_url('/frontend/css/lead-market-place-frontend.css', __FILE__), array(), rand(111, 9999), 'all');
 	wp_enqueue_style('custom_css', plugins_url('/frontend/css/lead-portal-animations.css', __FILE__), array(), rand(111, 9999), 'all');
@@ -691,4 +767,6 @@ function edugorilla_shortcode_require()
 }
 
 add_action('wp_enqueue_scripts', 'edugorilla_shortcode_require');
+
+
 ?>

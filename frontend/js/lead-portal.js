@@ -45,65 +45,98 @@
 				}
 			};
 			$scope.toggle_card_hidden = function (card) {
-				//$http({
-				//	method: 'POST',
-				//	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-				//	url: '/wp-json/marketplace/v1/leads/sethidden',
-				//	data:'true',
-				//	cache: true
-				//}).success(function (data, status, headers, config) {
-				card.isHidden = !card.isHidden;
-				//	})
-				//	.error(function (data, status, header, config) {
-				//		alert("Unable to set the hidden status.");
-				//	});
+				function hideSuccessCallback(response) {
+					//success code
+					card.isHidden = !card.isHidden;
+				}
+
+				function hideErrorCallback(error) {
+					//error code
+					alert("Unable to set the hidden status.");
+				}
+				$http({
+					method: 'POST',
+					url: '/wp-json/marketplace/v1/leads/sethidden',
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+					transformRequest: function (obj) {
+						var str = [];
+						for (var p in obj)
+							str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+						return str.join("&");
+					},
+					data: {lead_id: card.leadId, hidden_status: !card.isHidden},
+					cache: true
+				}).then(hideSuccessCallback, hideErrorCallback);
 			};
 			$scope.unlock_card_if_possible = function (card) {
-				//var eduCashBalance = getCurrentEduCashBalance();
-				//var costForUnlock = 1;
-				//if(eduCashBalance>=costForUnlock) {
-				//setEduCashBalance(eduCashBalance-costForUnlock);
-				card.isUnlocked = true;
-				//setCardUnlockedStatusInDb(card.isUnlocked);
-				//}
+				function unlockSuccessCallback(response) {
+					//success code
+					card.isUnlocked = !card.isUnlocked;
+				}
+
+				function unlockErrorCallback(error) {
+					//error code
+					alert("Unable to set the Unlock status.");
+				}
+				$http({
+					method: 'POST',
+					url: '/wp-json/marketplace/v1/leads/setunlock',
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+					transformRequest: function (obj) {
+						var str = [];
+						for (var p in obj)
+							str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+						return str.join("&");
+					},
+					data: {lead_id: card.leadId, unlock_status: "true"},
+					cache: true
+				}).then(unlockSuccessCallback, unlockErrorCallback);
 			};
 			$scope.cards = [];
 			$scope.topLocations = [];
 			$scope.topCategories = [];
 			function populateScopevariablesFromAPI(data) {
-				var locationCount = {};
-				var categoryCount = {};
+				var locationArray = {};
+				var categoryArray = {};
 				for (var index = 0; index < data.length; ++index) {
 					var card = data[index].lead_card;
-					var locationInt = ++locationCount[card.location];
-					var catrgoryInt = ++categoryCount[card.category];
-					if (isNaN(locationInt)) {
-						locationCount[card.location] = locationInt = 1;
+					if (card.locationId == -1) {
+						card.locationName = "UnknownLocation";
 					}
-					if (isNaN(catrgoryInt)) {
-						categoryCount[card.category] = catrgoryInt = 1;
+					if (card.categoryId == -1) {
+						card.categoryName = "UnknownCategory";
+					}
+					var locationCount = ++locationArray[card.locationName];
+					var catergoryCount = ++categoryArray[card.categoryName];
+					if (isNaN(locationCount)) {
+						locationArray[card.locationName] = locationCount = 1;
+					}
+					if (isNaN(catergoryCount)) {
+						categoryArray[card.categoryName] = catergoryCount = 1;
 					}
 					var currentLocation = {
-						Name: card.location,
-						Count: locationInt
+						Name: card.locationName,
+						locId: card.locationId,
+						Count: locationCount
 					};
 					var currentCategory = {
-						Name: card.category,
-						Count: catrgoryInt
+						Name: card.categoryName,
+						catId: card.categoryId,
+						Count: catergoryCount
 					};
 					$scope.cards.push(card);
 					var isExistingLocation = false;
 					var isExistingCategory = false;
 					for (var i = 0; i < $scope.topLocations.length; i++) {
-						if ($scope.topLocations[i].Name == currentLocation.Name) {
+						if ($scope.topLocations[i].locId == currentLocation.locId) {
 							isExistingLocation = true;
-							$scope.topLocations[i].Count = locationInt;
+							$scope.topLocations[i].Count = locationCount;
 						}
 					}
 					for (var i = 0; i < $scope.topCategories.length; i++) {
-						if ($scope.topCategories[i].Name == currentCategory.Name) {
+						if ($scope.topCategories[i].catId == currentCategory.catId) {
 							isExistingCategory = true;
-							$scope.topCategories[i].Count = catrgoryInt;
+							$scope.topCategories[i].Count = catergoryCount;
 						}
 					}
 					if (!isExistingLocation) {
@@ -114,20 +147,25 @@
 					}
 				}
 			};
+			function detailSuccessCallback(response) {
+				//success code
+				populateScopevariablesFromAPI(response.data);
+			}
+
+			function detailErrorCallback(error) {
+				//error code
+				alert("Unable to fetch the lead details from the API.");
+				new Custombox.modal({
+					content: {
+						effect: 'fadein',
+						target: '#modal'
+					}
+				}).open();
+			}
 			$http({
 				url: '/wp-json/marketplace/v1/leads/details',
 				cache: true
-			})
-				.success(function (data, status, headers, config) {
-					// this callback will be called asynchronously
-					// when the response is available
-					populateScopevariablesFromAPI(data);
-				})
-				.error(function (data, status, header, config) {
-					// called asynchronously if an error occurs
-					// or server returns response with an error status.
-					alert("Unable to fetch the lead details from the API.");
-				});
+			}).then(detailSuccessCallback, detailErrorCallback);
 		}]);
 })(window.angular);
 
