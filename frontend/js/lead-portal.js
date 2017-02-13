@@ -76,7 +76,15 @@
 
 				function unlockErrorCallback(error) {
 					//error code
-					alert("Unable to set the Unlock status.");
+					var retVal = confirm("Looks like you do not have sufficient EduCash. Would you like to buy EduCash Now?");
+					if( retVal == true ){
+						alert("Redirect to Payment page!");
+						return true;
+					}
+					else{
+						alert("Redirect to home page!");
+						return false;
+					}
 				}
 				$http({
 					method: 'POST',
@@ -168,12 +176,6 @@
 			function detailErrorCallback(error) {
 				//error code
 				alert("Unable to fetch the lead details from the API.");
-				new Custombox.modal({
-					content: {
-						effect: 'fadein',
-						target: '#modal'
-					}
-				}).open();
 			}
 			$http({
 				url: '/wp-json/marketplace/v1/leads/details',
