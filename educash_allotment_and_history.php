@@ -20,7 +20,7 @@ function allocate_educash_form_page()
             $educash_added = $_POST['educash'];
             $client_ID_result = $wpdb->get_var("SELECT ID FROM $users_table WHERE user_email = '$clientName' ");
             $total = $wpdb->get_var("SELECT sum(transaction) FROM $table_name3 WHERE client_id = '$client_ID_result' ");
-            $final_total = $total + $educash;
+            $final_total = $total + $educash_added;
             if($final_total>=0){
             $money = $_POST['money'];
             $adminName = wp_get_current_user();
@@ -167,6 +167,22 @@ function allocate_educash_form_page()
 	    return confirm("Do you really want to submit this entry?");
 	}
 }
+function view_client_details(){document.getElementById("submit_popup").style.display="inline";
+			    document.getElementById("edit_popup").style.display="inline";
+			    var popup_fields=document.getElementsByClassName("popup_input_field");
+				popup_fields[0].readOnly=true;
+				popup_fields[1].readOnly=true;
+			    popup_fields[2].readOnly=true;
+				popup_fields[3].readOnly=true;
+				}
+function edit_details(){document.getElementById("submit_popup").style.display="none";
+			    document.getElementById("edit_popup").style.display="none";
+				var popup_fields=document.getElementsByClassName("popup_input_field");
+				popup_fields[0].readOnly=false;
+				popup_fields[1].readOnly=false;
+				popup_fields[2].readOnly=false;
+			    popup_fields[3].readOnly=false;
+				}
 </script>
 <div id='myModalbg' class="modalbg">
     <div class="modal-contentbg">
@@ -177,21 +193,23 @@ function allocate_educash_form_page()
     <div class="modal-bodybg">
 
 <center><form name="myForm" method='post' onsubmit="return validate_final_allotment_form()" action="<?php echo $_SERVER['REQUEST_URI'];?>">
-             Client Email (Type the Email Id of the client whom you want to allot educash):<br/><input type='text' id='clientName22' name='clientName'
+             Client Email (Type the Email Id of the client whom you want to allot educash):<br/><input type='text' id='clientName22' class='popup_input_field' name='clientName'
                                  value = <?php echo $_POST['clientName1']; ?>			 maxlength='100'>*<br/>
 			                                                                                    <span style='color:red;' id='errmsgf1'></span>
                                                                                                 <br/><br/>
-             Type the educash to be added in the client's account:<br/><input type='number' id='educash22' name='educash' min='-100000000'
+             Type the educash to be added in the client's account:<br/><input type='number' id='educash22' class='popup_input_field' name='educash' min='-100000000'
 			                      value = <?php echo $_POST['educash1']; ?>           max='100000000'>*<br/>
 																	   <span style='color:red;' id='errmsgf2'></span>
                                                                        <br/><br/>
-             Type the amount of money that the client has paid:<br/><input type='number' id='money22' name='money' min='-100000000'
+             Type the amount of money that the client has paid:<br/><input type='number' id='money22' class='popup_input_field' name='money' min='-100000000'
 			                      value = <?php echo $_POST['money1']; ?>        max='100000000'>*<br/>
 																	   <span style='color:red;' id='errmsgf3'></span>
                                                                        <br/><br/>
-             Type your comments here (optional):<br/><textarea rows='4' cols='60' id='adminComment22' name='adminComment'
+             Type your comments here (optional):<br/><textarea rows='4' cols='60' id='adminComment22' class='popup_input_field' name='adminComment'
 			                          maxlength='500'> <?php echo $_POST['adminComment1']; ?> </textarea><br/><br/>
-             <input type='submit' name='submit'><br/>
+             <span style='padding:5px; background-color:#5cb85c; color:white;' onclick='view_client_details()'>View Details</span><br/><br/>
+             <input type='submit' style='display:none;' name='submit' id='submit_popup'><br/><br/>
+			 <span style='padding:5px 10px; background-color:#5cb85c; color:white; display:none;' id='edit_popup' onclick='edit_details()'>Edit</span><br/>
 </form></center>
     </div>
     </div>
@@ -236,7 +254,7 @@ function allocate_educash_form_page()
                  is ".$total. ". Your entry will leave this client with negative amount of educash which is not allowed.</span></center>";
         }
         else{
-        $results = $wpdb->get_results("SELECT * FROM $table_name3 WHERE client_id = '$client_ID' ");
+        $results = $wpdb->get_results("SELECT * FROM $table_name3 WHERE client_id = '$client_ID_result' ");
         $sum = 0;
             foreach($results as $e) {
                 $educash_add = $e->transaction;
