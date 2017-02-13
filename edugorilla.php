@@ -223,6 +223,8 @@ include_once plugin_dir_path(__FILE__) . 'frontend/class-EduCash-Helper.php'; /*
 include_once plugin_dir_path(__FILE__) . 'database/class-DataBase-Helper.php'; /*Utility class used for dealing with Database */
 include_once plugin_dir_path(__FILE__) . "send_email_to_client.php";
 
+include_once plugin_dir_path(__FILE__) . "edugorilla_pages.php";
+
 
 
 function edugorilla()
