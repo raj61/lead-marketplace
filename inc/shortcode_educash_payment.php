@@ -43,27 +43,22 @@
               <b><h3><p class="conversion">*(1 educash is equal to <?php echo $conversion; ?> Rs)</p></h3></b></br>
               <b><span class="pay_heading1">Click here to pay using PayUMoney </span></b></br></br>
               <button onClick=this.form.action="<?php echo $payumoney_page;?>" class="pay_button1"><img src="<?php echo $payumoney_logo;?>"></img></button>
-            </form>
           </div>
        </div>
 
 
        <div class="pay_card" >
          <div class ="pay_card2">
-             <form method="post" action="<?php echo $karmapay;?>">
 
-             <input name="email" id="email" value="<?php echo $current_user->user_email; ?>" type="hidden" />
-             <input name="user_id" id="userid" value="<?php echo $current_user->id; ?>" type="hidden" />
              <input name="conversion_karmas" id="conversion_karmas" value="<?php echo $conversion_karmas; ?>" type="hidden"/>
-
-             <b><span class="pay_heading1">Enter number of educash you want</span></br></b>
-             <br><div class="pay_inputbox1"><input  ng-model="amount" type="number" name="educash_amount" placeholder="0" style="font-size: 20pt; text-align: center; font-weight: bold;" required/></div>
              <div class="pay_output_amount"><b>Total =  {{amount*<?php echo $conversion_karmas; ?>}} Rs. </b></div>
              <b><h3><p class="conversion">*(1 educash is equal to <?php echo $conversion_karmas; ?> karmas)</p></h3></b></br>
              <b><span class="pay_heading1">Click here to buy educash using Karmas </span></b></br></br>
-             <button class="pay_button1" style="color:Grey">Karma</button>
-         </div>
+             <button onClick=this.form.action="<?php echo $karmapay;?>" class="pay_button1" style="color:Grey">Karma</button>
+          </form>
+        </div>
      </div>
+
       <?php
       }
       else{
