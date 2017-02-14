@@ -51,7 +51,7 @@
          <div class ="pay_card2">
 
              <input name="conversion_karmas" id="conversion_karmas" value="<?php echo $conversion_karmas; ?>" type="hidden"/>
-             <div class="pay_output_amount"><b>Total =  {{amount*<?php echo $conversion_karmas; ?>}} Rs. </b></div>
+             <div class="pay_output_amount"><b>Total =  {{amount*<?php echo $conversion_karmas; ?>}} karmas. </b></div>
              <b><h3><p class="conversion">*(1 educash is equal to <?php echo $conversion_karmas; ?> karmas)</p></h3></b></br>
              <b><span class="pay_heading1">Click here to buy educash using Karmas </span></b></br></br>
              <button onClick=this.form.action="<?php echo $karmapay;?>" class="pay_button1" style="color:Grey">Karma</button>
