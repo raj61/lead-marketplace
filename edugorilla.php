@@ -126,7 +126,7 @@ function create_edugorilla_menus()
 
 	add_submenu_page(
 		'edugorilla',
-		'Lead Marketplace',
+		'Lead Marketplace | Lead capture form',
 		'Lead capture form',
 		'read',
 		'edugorilla',
@@ -207,8 +207,8 @@ function create_edugorilla_menus()
 
     add_submenu_page(
 		'edugorilla',
-		'Settings',
-		'Settings',
+		'Lead Marketplace | Third Party Settings',
+		'Third Party Settings',
 		'manage_options',
 		'edugorilla-settings',
 		'edugorilla_settings'
@@ -225,6 +225,8 @@ include_once plugin_dir_path(__FILE__) . 'frontend/class-Custom-Lead-API.php'; /
 include_once plugin_dir_path(__FILE__) . 'frontend/class-EduCash-Helper.php'; /*Utility class used for dealing with EduCash */
 include_once plugin_dir_path(__FILE__) . 'database/class-DataBase-Helper.php'; /*Utility class used for dealing with Database */
 include_once plugin_dir_path(__FILE__) . "send_email_to_client.php";
+
+include_once plugin_dir_path(__FILE__) . "edugorilla_pages.php";
 
 
 
@@ -599,13 +601,13 @@ function edugorilla()
 
 function script()
 {
-	wp_enqueue_style('select2-css', plugins_url('/css/select2.css', __FILE__));
+	wp_enqueue_style('select2-css', plugins_url('/libs/select2/select2.css', __FILE__));
 	wp_enqueue_style('modal-css', plugins_url('/css/jquery.modal.css', __FILE__));
 	wp_enqueue_style('jquery-ui-styles', "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css");
 
 	wp_enqueue_script(
 		'select2-script',                         // Handle
-		plugins_url('/js/select2.js', __FILE__),  // Path to file
+		plugins_url('/libs/select2/select2.js', __FILE__),  // Path to file
 		array('jquery')                             // Dependancies
 	);
 
@@ -752,7 +754,7 @@ function edugorilla_shortcode_require()
 {
 	// for bootstrap 4.0 to work
 	wp_enqueue_style('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css');
-	wp_enqueue_script('ajaxlib1', 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js');
+	wp_enqueue_script('ajaxlib1', 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js');
 	wp_enqueue_script('ajaxlib2', 'https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js');
 	wp_enqueue_script('bootjs', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js');
 	wp_enqueue_script('angularJs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js');
