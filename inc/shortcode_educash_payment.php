@@ -24,9 +24,9 @@
         $karmapay = plugins_url('/karmapay.php',__FILE__);
         ?>
 
-        <div class="pay_card" ng-app="" ng-init="amount='0';" style="background-image: url("<?php echo $background;?>");">
+        <div class="pay_card"  style="background-image: url("<?php echo $background;?>");">
           <div class ="pay_card2">
-            <form name="tranaction_form" method="post" action="">
+            <form name="tranaction_form" ng-app="" ng-init="amount='0';" method="post" action="">
               <input name="userid" id="userid" value="<?php echo $current_user->id; ?>" type="hidden" />
               <input name="allocation_page" id="allocation_page" value="<?php echo $allocation_page; ?>" type="hidden" />
               <input name="email" id="email" value="<?php echo $current_user->user_email; ?>" type="hidden" />
@@ -46,12 +46,11 @@
           </div>
        </div>
 
-
        <div class="pay_card" >
          <div class ="pay_card2">
 
              <input name="conversion_karmas" id="conversion_karmas" value="<?php echo $conversion_karmas; ?>" type="hidden"/>
-             <div class="pay_output_amount"><b>Total =  {{amount*<?php echo $conversion_karmas; ?>}} Rs. </b></div>
+             <div class="pay_output_amount"><b>Total =  {{amount*<?php echo $conversion_karmas; ?>}} karmas. </b></div>
              <b><h3><p class="conversion">*(1 educash is equal to <?php echo $conversion_karmas; ?> karmas)</p></h3></b></br>
              <b><span class="pay_heading1">Click here to buy educash using Karmas </span></b></br></br>
              <button onClick=this.form.action="<?php echo $karmapay;?>" class="pay_button1" style="color:Grey">Karma</button>
