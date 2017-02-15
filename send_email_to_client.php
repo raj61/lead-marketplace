@@ -4,7 +4,7 @@
 	global $wpdb;
 	$table_name6 = $wpdb->prefix.'edugorilla_client_preferences'; //client preferences
 	$sql6 = "CREATE TABLE $table_name6 (
-				                            id int(15) NOT NULL AUTO_INCREMENT,				                     
+				                            id int(15) NOT NULL,				                     
 											client_name varchar(200) NOT NULL,
 											email_id varchar(200) NOT NULL,
 											contact_no varchar(50) NOT NULL,
@@ -26,12 +26,14 @@
 function send_mail($edugorilla_email_subject , $edugorilla_email_body){
 	global $wpdb;
 	$table_name = $wpdb->prefix .'edugorilla_client_preferences';
-	$client_email_addresses = $wpdb->get_results( "SELECT * FROM $table_name WHERE preferences = 'Instant_Notifications'" );
+	$client_email_addresses = $wpdb->get_results( "SELECT * FROM $table_name" );
 	$headers = array('Content-Type: text/html; charset=UTF-8');
 	foreach ($client_email_addresses as $cea) {
-		add_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type');
-		$institute_emails_status = wp_mail($cea->email_id , $edugorilla_email_subject , ucwords($edugorilla_email_body),$headers);
-		remove_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type'); 
+		if (preg_match('/Instant_Notifications/',$cea->preferences)) {
+			add_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type');
+			$institute_emails_status = wp_mail($cea->email_id , $edugorilla_email_subject , ucwords($edugorilla_email_body),$headers);
+			remove_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type'); 
+		}
 	}
 
 	return $institute_emails_status;
@@ -42,27 +44,17 @@ function edugorilla_client(){
 
 	if (isset($_POST['submit_client_pref'])) {
 		# code...
-		$_client_name = $_POST['_client_name'];
-		$client_email = $_POST['client_email'];
-		$client_contact = $_POST['client_contact'];
-		$notification = $_POST['notification'];
+		$notification_all = $_POST['notification'];
+		foreach ($notification_all as $value) {
+			# code...
+			$notification = $value.", ".$notification;
+		}
 		$location = $_POST['location'];
 		$category = $_POST['category'];
 
 		/** Error Checking **/
 		$c_errors = array();
-		if (empty($_client_name)) $c_errors['_client_name'] = "Empty";
-		elseif (!preg_match("/([A-Za-z]+)/", $_client_name)) $c_errors['_client_name'] = "Invalid Name";
-		
 
-		if (empty($client_contact)) $c_errors['client_contact'] = "Empty";
-		elseif (!preg_match("/([0-9]{10}+)/", $client_contact)) $c_errors['client_contact'] = "Invalid Contact Number";
-
-
-		if (empty($client_email)) $c_errors['client_email'] = "Empty";
-		elseif (filter_var($client_email, FILTER_VALIDATE_EMAIL) === false) $c_errors['client_email'] = "Invalid Email Id";
-
-		if(empty($notification)) $c_errors['notification'] = "Select any one option";
 
 		if (empty($location)) $c_errors['location'] = "Empty";
 		elseif (!preg_match("/([A-Za-z]+)/", $location)) $c_errors['location'] = "Invalid Name";
@@ -70,18 +62,43 @@ function edugorilla_client(){
 		if (empty($category)) $c_errors['category'] = "Empty";
 		elseif (!preg_match("/([A-Za-z]+)/", $category)) $c_errors['category'] = "Invalid Name";
 
+		$user_id = get_current_user_id(); 
+     	$user_detail = get_user_meta($user_id); 
+     	$first_name = $user_detail['first_name'][0];
+     	$last_name = $user_detail['last_name'][0];
+     	$_client_name = $first_name." ".$last_name;
+     	$client_email = $user_detail['user_general_email'][0];
+     	$client_contact = $user_detail['user_general_phone'][0];
+
 		//Insert Data to table
 		if(empty($errors)){
+
 		global $wpdb;
+		$table_name = $wpdb->prefix .'edugorilla_client_preferences';
+		if($wpdb->get_results( "SELECT * FROM $table_name WHERE id = $user_id")){
+		$client_result = $wpdb->update( $table_name, 
+				array(
+					'preferences' => $notification,
+					'location' => $location,
+					'category' => $category
+					)
+				, 
+				array('id' =>$user_id)
+				, $format = null, $where_format = null );
+		}else{
 		$client_result = $wpdb->insert(
 				$wpdb->prefix.'edugorilla_client_preferences',
 				array(
+					'id' => $user_id,
 					'client_name' => $_client_name,
 					'email_id' => $client_email,
 					'contact_no' => $client_contact,
-					'preferences' => $notification
+					'preferences' => $notification,
+					'location' => $location,
+					'category' => $category
 				)
 			);
+		}
 
 		if ($client_result)
 			$client_success = "Saved Successfully";
@@ -95,18 +112,6 @@ function edugorilla_client(){
 	<form action="" method="post">
 		<p><?php echo $client_success; ?></p>
 		<table>
-			<tr><td>Name<sup><font color="red">*</font></sup> : </td>
-				<td><input type="text" name="_client_name">
-					<font color="red"><?php echo $c_errors['_client_name']; ?></font>
-				</td></tr>
-			<tr><td>Email Id<sup><font color="red">*</font></sup> : </td>
-				<td><input type="email" name="client_email">
-					<font color="red"><?php echo $c_errors['client_email']; ?></font>
-				</td></tr>
-			<tr><td>Contact No.<sup><font color="red">*</font></sup> : </td>
-				<td><input type="number" name="client_contact">
-					<font color="red"><?php echo $c_errors['client_contact']; ?></font>
-				</td></tr>
 			<tr><td rowspan="4">Notification Preferences<sup><font color="red">*</font></sup> : </td><td><input type="radio" name="notification" value="Instant_Notifications">Instant Notification</td></tr>
 			<tr><td><input type="radio" name="notification" value="Daily_Digest">Daily Digest</td></tr>
 			<tr><td><input type="radio" name="notification" value="Weekly_Digest">Weekly Digest</td></tr>
@@ -163,14 +168,16 @@ function edugorilla_client(){
 					//send mail to clients
 					global $wpdb;
 					$table_name = $wpdb->prefix .'edugorilla_client_preferences';
-					$client_email_addresses = $wpdb->get_results( "SELECT * FROM $table_name WHERE preferences = 'Weekly_Digest'");
+					$client_email_addresses = $wpdb->get_results( "SELECT * FROM $table_name");
 
 					$headers = array('Content-Type: text/html; charset=UTF-8');
 
 					foreach ($client_email_addresses as $cea) {
+						if(preg_match('/Weekly_Digest/',$cea->preferences)) {
 						add_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type');
 						$institute_emails_status = wp_mail($cea->email_id , $edugorilla_email_subject , ucwords($edugorilla_email_body),$headers);
 						remove_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type'); 
+						}
 					}
 
 		}
@@ -195,14 +202,16 @@ function edugorilla_client(){
 					//send mail to clients (Instant Mail)
 					global $wpdb;
 					$table_name = $wpdb->prefix .'edugorilla_client_preferences';
-					$client_email_addresses = $wpdb->get_results( "SELECT * FROM $table_name WHERE preferences = 'Daily_Digest'");
+					$client_email_addresses = $wpdb->get_results( "SELECT * FROM $table_name");
 
 					$headers = array('Content-Type: text/html; charset=UTF-8');
 
 					foreach ($client_email_addresses as $cea) {
+						if(preg_match('/Daily_Digest/',$cea->preferences)) {
 						add_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type');
 						$institute_emails_status = wp_mail($cea->email_id , $edugorilla_email_subject , ucwords($edugorilla_email_body),$headers);
 						remove_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type'); 
+						}
 					}
 		}
 
@@ -227,14 +236,16 @@ function edugorilla_client(){
 					//send mail to clients (Instant Mail)
 					global $wpdb;
 					$table_name = $wpdb->prefix .'edugorilla_client_preferences';
-					$client_email_addresses = $wpdb->get_results( "SELECT * FROM $table_name WHERE preferences = 'Monthly_Digest'");
+					$client_email_addresses = $wpdb->get_results( "SELECT * FROM $table_name");
 
 					$headers = array('Content-Type: text/html; charset=UTF-8');
 
 					foreach ($client_email_addresses as $cea) {
+						if(preg_match('/Monthly_Digest/',$cea->preferences)) {
 						add_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type');
 						$institute_emails_status = wp_mail($cea->email_id , $edugorilla_email_subject , ucwords($edugorilla_email_body),$headers);
 						remove_filter('wp_mail_content_type', 'edugorilla_html_mail_content_type'); 
+						}
 					}
 		}
 
