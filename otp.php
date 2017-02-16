@@ -60,6 +60,7 @@ function edugorilla_settings()
     <ul>
       <li><a href="#tabs-1">Gupshup Credentials</a></li>
       <li><a href="#tabs-2">PayUMoney Credentials</a></li>
+      <li><a href="#tabs-3">Conversion Tables</a></li>
     </ul>
 
     <div id="tabs-1">
@@ -140,8 +141,11 @@ function edugorilla_settings()
               </table>
           </form>
           </div></br></br>
+      </div>
+
+      <div id="tabs-3">
           <div class="wrap">
-          <h1>Conversion Rate - Rs</h1><br>
+          <h1>Conversion Rate - Rs to educash</h1><br>
             <form method="post" action="">
                 <table>
                     <tr>
@@ -197,7 +201,7 @@ function edugorilla_settings()
 
 
       <div class="wrap">
-      <h1>Conversion Rate - Karma</h1><br>
+      <h1>Conversion Rate - Karma to educash</h1><br>
         <form method="post" action="">
             <table>
                 <tr>
@@ -231,6 +235,43 @@ function edugorilla_settings()
             echo $out['rate']; ?> karmas</td>
         </tr>
     </table><br></br>
+
+
+    <div class="wrap">
+    <h1>Conversion Rate - Educash to leads</h1><br>
+      <form method="post" action="">
+          <table>
+              <tr>
+                  <th>New Rate</th>
+                  <td>
+                      <input type="number" name="educash_to_lead"/> educash.</br></br>
+                  </td>
+              </tr>
+              <tr>
+                  <td><input type="submit" class="button button-primary" value="Save"></td>
+              </tr>
+          </table>
+      </form>
+    </div>
+
+    <?php
+    if (isset($_POST['educash_to_lead']))
+    {
+      if(!empty($_POST['educash_to_lead']))
+        {
+          $credentials3 = array("rate"=>$_POST['educash_to_lead']);
+          update_option("educashtolead_rate",$credentials3);
+        }
+    } ?>
+
+    <table>
+      <tr>
+        <th>Current Rate = </th>
+          <td>1 lead for <?php
+           $out = get_option("educashtolead_rate");
+          echo $out['rate']; ?> educash</td>
+      </tr>
+  </table><br></br>
 
     </div>
   <?php
