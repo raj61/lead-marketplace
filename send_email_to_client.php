@@ -112,10 +112,10 @@ function edugorilla_client(){
 	<form action="" method="post">
 		<p><?php echo $client_success; ?></p>
 		<table>
-			<tr><td rowspan="4">Notification Preferences<sup><font color="red">*</font></sup> : </td><td><input type="radio" name="notification" value="Instant_Notifications">Instant Notification</td></tr>
-			<tr><td><input type="radio" name="notification" value="Daily_Digest">Daily Digest</td></tr>
-			<tr><td><input type="radio" name="notification" value="Weekly_Digest">Weekly Digest</td></tr>
-			<tr><td><input type="radio" name="notification" value="Monthly_Digest">Monthly Digest<br/>
+			<tr><td rowspan="4">Notification Preferences<sup><font color="red">*</font></sup> : </td><td><input type="checkbox" name="notification[]" id="notification" value="Instant_Notifications">Instant Notification</td></tr>
+			<tr><td><input type="checkbox" id="notification" name="notification[]" value="Daily_Digest">Daily Digest</td></tr>
+			<tr><td><input type="checkbox" id="notification" name="notification[]" value="Weekly_Digest">Weekly Digest</td></tr>
+			<tr><td><input type="checkbox" id="notification" name="notification[]" value="Monthly_Digest">Monthly Digest<br/>
 				<font color="red"><?php echo $c_errors['notification']; ?></font>
 			</td></tr>
 			<tr><td>Location/State</td><td><input type="text" name="location">
