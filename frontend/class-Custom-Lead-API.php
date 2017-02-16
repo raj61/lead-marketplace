@@ -434,7 +434,7 @@ function set_card_unlock_status_to_db($client_id, $lead_id, $unlock_status)
 	$result_status_string = "";
 	if ($unlock_status == '1') {
 		$eduCashHelper = new EduCash_Helper();
-		$eduCashCostForLead = $out['rate'];  // fectched from meta table
+		$eduCashCostForLead = $out['rate'];  // fetched from meta table
 		$query_status = $eduCashHelper->removeEduCashFromUser($client_id, $eduCashCostForLead);
 		if (!str_starts_with($query_status, "Success")) {
 			return new WP_Error('EduCashError', $query_status . " for $client_id");
