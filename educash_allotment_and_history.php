@@ -34,6 +34,23 @@ function allocate_educash_form_page()
                 'amount' => $money,
                 'comments' => $adminComment
             ));
+			
+			update_user_meta($client_ID_result, 'user_general_first_name', $_POST['client_firstname']);
+			update_user_meta($client_ID_result, 'user_general_last_name', $_POST['client_lastname']);
+			update_user_meta($client_ID_result, 'user_address_street_and_number', $_POST['client_street']);
+			update_user_meta($client_ID_result, 'user_address_city', $_POST['client_city']);
+			update_user_meta($client_ID_result, 'user_address_postal_code', $_POST['client_postalcode']);
+			update_user_meta($client_ID_result, 'user_address_county', $_POST['client_state']);
+			update_user_meta($client_ID_result, 'user_address_country', $_POST['client_country']);
+			
+			$all_meta_for_user = get_user_meta( $client_ID_result );
+	        $client_firstname = $all_meta_for_user['user_general_first_name'][0];
+	        $client_lastname = $all_meta_for_user['user_general_last_name'][0];
+	        $client_street = $all_meta_for_user['user_address_street_and_number'][0];
+	        $client_city = $all_meta_for_user['user_address_city'][0];
+	        $client_postal_code = $all_meta_for_user['user_address_postal_code'][0];
+	        $client_state = $all_meta_for_user['user_address_county'][0];
+	        $client_country = $all_meta_for_user['user_address_country'][0];
            }
         }
 		}
@@ -52,19 +69,6 @@ function allocate_educash_form_page()
         if (empty($_POST['educash1'])) {
             $educasherr = "<span style='color:red;'>* This field cannot be blank</span>";
         } else {
-            $educash = $_POST['educash1'];
-        }}
-		
-		if($_POST['view_client_details']){
-	        $clientName = $_POST['clientName'];
-            $check_client = $wpdb->get_var("SELECT COUNT(ID) from $users_table WHERE user_email = '$clientName' ");
-            if($check_client == 0){
-                echo '<script>alert("This client does not exist in our database");</script>';
-            }
-			else{
-		    if (empty($_POST['educash'])) {
-            echo '<script>alert("The field of educash cannot be blank");</script>';
-		} else {
 			$client_ID_result = $wpdb->get_var("SELECT ID FROM $users_table WHERE user_email = '$clientName' ");
 		    $all_meta_for_user = get_user_meta( $client_ID_result );
 	        $client_firstname = $all_meta_for_user['user_general_first_name'][0];
@@ -74,12 +78,9 @@ function allocate_educash_form_page()
 	        $client_postal_code = $all_meta_for_user['user_address_postal_code'][0];
 	        $client_state = $all_meta_for_user['user_address_county'][0];
 	        $client_country = $all_meta_for_user['user_address_country'][0];
-			
-		    $client_name_details = '<span><b>NAME: </b><br/>'.$client_firstname.' '.$client_lastname.'<br/><br/><br/><br/></span>';
-		    $client_address_details = '<span><b>ADDRESS: </b><br/>'.$client_street.'<br/>'.$client_city.' - '.$client_postal_code.'<br/>'.$client_state.'<br/>'.$client_country.'</span>'; 
-	    }
+        }
 		}
-		}
+
 //Form to allocate educash
 ?>
 <style>
@@ -89,7 +90,7 @@ function allocate_educash_form_page()
 	top:0;
 	right:0;
     z-index: 1;
-    padding-top: 90px;
+    padding-top: 80px;
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.4);
@@ -189,7 +190,12 @@ function allocate_educash_form_page()
         document.getElementById('errmsgf3').innerHTML = "* This field cannot be negative";
 		return false;
     }
-	
+	for( i = 0; i < 7; i++ ){
+		if(document.getElementsByClassName('compulsory_popup_field')[i].value == ""){
+			document.getElementsByClassName('compulsory_popup_field_error')[i].innerHTML = "* This field cannot be blank";
+			return false;
+		}
+	}
 }
 </script>
 <div id='myModalbg' class="modalbg">
@@ -199,92 +205,133 @@ function allocate_educash_form_page()
       <center><h2>You are about to make the follwing entry:</h2></center>
     </div>
     <div class="modal-bodybg">
-     <div style='width:100%; margin:auto;'><center><span style='padding:20px; display:inline-block;'><?php echo $client_name_details;?></span><span style='padding:20px; display:inline-block;'><?php echo $client_address_details;?></span>
-	                                                                                                      </center></div>
-<center><form name="myForm" method='post' onsubmit="return validate_final_allotment_form()" action="<?php echo $_SERVER['REQUEST_URI'];?>">
+<div class="wrap">
+<form name="myForm" method='post' onsubmit="return validate_final_allotment_form()" action="<?php echo $_SERVER['REQUEST_URI'];?>">
+<table class="form-table">
 
-             Client Email (Type the Email Id of the client whom you want to allot educash):<br/><input type='text' id='clientName22' class='popup_input_field' name='clientName'
-                                 value = "<?php echo $_POST['clientName1']; ?><?php echo $_POST['clientName']; ?>"			 maxlength='100'>*<br/>
-			                                                                                    <span style='color:red;' id='errmsgf1'></span>
-                                                                                                <br/><br/>
-             Type the educash to be added in the client's account:<br/><input type='number' id='educash22' class='popup_input_field' name='educash' min='-100000000'
-			                      value = "<?php echo $_POST['educash1']; ?><?php echo $_POST['educash']; ?>"           max='100000000'>*<br/>
-																	   <span style='color:red;' id='errmsgf2'></span>
-                                                                       <br/><br/>
-             Type the amount of money that the client has paid:<br/><input type='number' id='money22' class='popup_input_field' name='money' min='-100000000'
-			                      value = "<?php echo $_POST['money1']; ?><?php echo $_POST['money']; ?>"        max='100000000'>*<br/>
-																	   <span style='color:red;' id='errmsgf3'></span>
-                                                                       <br/><br/>
-             Type your comments here (optional):<br/><textarea rows='4' cols='60' id='adminComment22' class='popup_input_field' name='adminComment'
-			                          maxlength='500'> <?php echo $_POST['adminComment1']; ?><?php echo $_POST['adminComment']; ?> </textarea><br/><br/>
-             <input type='submit' name='view_client_details' style='background-color:#5cb85c; color:white;' value = 'view details'><br/><br/>
-             <input type='submit' style='display:none;' name='submit' id='submit_popup'><br/><br/>
-			 <input type='submit' name='edit_client_details' style='padding:5px 10px; background-color:#5cb85c; color:white; display:none;' id='edit_popup' value = 'edit'><br/>
-</form></center>
+				<tr>
+					<th>Street and number<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='text' name = 'client_street' class = 'compulsory_popup_field' value = "<?php echo $client_street; ?>" maxlength='100'>
+						<span style='color:red;' class = 'compulsory_popup_field_error'></span>
+					</td>
+					<td></td>
+					<th>Client Firstname<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='text' name = 'client_firstname' class = 'compulsory_popup_field' value = "<?php echo $client_firstname;?>" maxlength='100'>
+						<span style='color:red;' class = 'compulsory_popup_field_error'></span>
+					</td>
+				</tr>
+				<tr>
+					<th>Postal code<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='text'  name = 'client_postalcode' class = 'compulsory_popup_field' value = "<?php echo $client_postal_code; ?>" maxlength='100'>
+						<span style='color:red;' class = 'compulsory_popup_field_error'></span>
+					</td>
+					<td></td>
+					<th>Client Lastname<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='text' name = 'client_lastname' class = 'compulsory_popup_field' value = "<?php echo $client_lastname; ?>" maxlength='100'>
+						<span style='color:red;' class = 'compulsory_popup_field_error'></span>
+					</td>
+				</tr>
+				<tr>
+					<th>City<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='text' name = 'client_city' class = 'compulsory_popup_field' value = "<?php echo $client_city; ?>" maxlength='100'>
+						<span style='color:red;' class = 'compulsory_popup_field_error'></span>
+					</td>
+					<td></td>
+					<th>Client Email<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='text' id='clientName22' class='popup_input_field' name='clientName' value = "<?php echo $_POST['clientName1']; ?>" maxlength='100'>
+						<span style='color:red;' id='errmsgf1'></span>
+					</td>
+				</tr>
+				<tr>
+					<th>State / County<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='text' name = 'client_state' class = 'compulsory_popup_field' value = "<?php echo $client_state; ?>" maxlength='100'>
+						<span style='color:red;' class = 'compulsory_popup_field_error'></span>
+					</td>
+					<td></td>
+					<th>EduCash (Enter educash to be allotted)<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='number' id='educash22' class='popup_input_field' name='educash' min='-100000000' value = "<?php echo $_POST['educash1']; ?>" max='100000000'>
+						<span style='color:red;' id='errmsgf2'></span>
+					</td>
+				</tr>
+				<tr>
+					<th>Country<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='text' name = 'client_country' class = 'compulsory_popup_field' value = "<?php echo $client_country; ?>" maxlength='100'>
+						<span style='color:red;' class = 'compulsory_popup_field_error'></span>
+					</td>
+					<td></td>
+					<th>Amount (Amount paid by client)</th>
+					<td>
+						<input type='number' id='money22' class='popup_input_field' name='money' min='0' value = "<?php echo $_POST['money1']; ?>" max='100000000'>
+						<span style='color:red;' id='errmsgf3'></span>
+					</td>
+				</tr>
+</table><br/>
+<center><b>Comments (optional)</b><br/><textarea rows='4' cols='60' id='adminComment22' class='popup_input_field' name='adminComment' maxlength='500'>
+						<?php echo $_POST['adminComment1']; ?></textarea><br/><br/>
+						<input type='submit' name='submit' onclick = 'return confirm("Are you sure you want to submit this entry ?")'><br/><br/></center>
+
+			
+</form>
+</div>
     </div>
     </div>
 </div>
-    <center><form method='post' onsubmit = "return validate_allotment_form()" action="<?php echo $_SERVER['REQUEST_URI'];?>"><h2>Use this form to allocate educash to a client</h2><br/>
-             Client Email (Type the Email Id of the client whom you want to allot educash):<br/><input type='text' id='clientName11' name='clientName1' 
-			                        value= "<?php echo $_POST['clientName1']; ?><?php echo $_POST['clientName']; ?>"         maxlength='100'>*<br/>
-                                                                                                <span style='color:red;' id='errmsg1'></span>
-																								<span><?php echo $clientnamerr; echo $invalid_client;?> </span>
-                                                                                                <br/><br/>
-             Type the educash to be added in the client's account:<br/><input type='number' id='educash11' name='educash1' min='-100000000' 
-			                      value = "<?php echo $_POST['educash1']; ?><?php echo $_POST['educash']; ?>"        max='100000000'>*<br/>
-			                                                           <span><?php echo $educasherr;?> </span>
-                                                                       <span style='color:red;' id='errmsg2'></span>
-                                                                       <br/><br/>
-             Type the amount of money that the client has paid:<br/><input type='number' id='money11' name='money1' min='-100000000' 
-			                  value = "<?php echo $_POST['money1']; ?><?php echo $_POST['money']; ?>"     max='100000000'>*<br/>
-                                                                       <span style='color:red;' id='errmsg3'></span>
-                                                                       <br/><br/>
-             Type your comments here (optional):<br/><textarea rows='4' cols='60' id='adminComment11' name='adminComment1' maxlength='500'><?php echo $_POST['adminComment1']; ?>
-			                                                                                                                            <?php echo $_POST['adminComment']; ?></textarea><br/><br/>
-             <input type='submit' name='SUBMIT'><br/>
-            </form></center>
+        <div class="wrap">
+		<h1>Use this form to allocate educash to a client</h1>
+		
+		<form method='post' onsubmit = "return validate_allotment_form()" action="<?php echo $_SERVER['REQUEST_URI'];?>">
+			<table class="form-table">
+				<tr>
+					<th>Client Email<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='text' id='clientName11' name='clientName1' value= "<?php echo $_POST['clientName1']; ?>" placeholder = 'Type email here...' maxlength='100'>
+						<span style='color:red;' id='errmsg1'></span>
+						<span><?php echo $clientnamerr; echo $invalid_client;?></span>
+					</td>
+				</tr>
+				<tr>
+					<th>EduCash (Enter educash to be allotted)<sup><font color="red">*</font></sup></th>
+					<td>
+						<input type='number' id='educash11' name='educash1' min='-100000000' value = "<?php echo $_POST['educash1']; ?>" max='100000000'>
+						<span><?php echo $educasherr;?> </span>
+                        <span style='color:red;' id='errmsg2'></span>
+					</td>
+				</tr>
+				<tr>
+					<th>Amount (Amount paid by client)</th>
+					<td>
+						<input type='number' id='money11' name='money1' min='0' value = "<?php echo $_POST['money1']; ?>" max='100000000'>
+						<span style='color:red;' id='errmsg3'></span>
+					</td>
+				</tr>
+				<tr>
+					<th>Comments (optional)</th>
+					<td>
+                        <textarea rows='4' cols='60' id='adminComment11' name='adminComment1' maxlength='500'>
+						<?php echo $_POST['adminComment1']; ?></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<input type="hidden">
+					</th>
+					<td>
+						<input type='submit' name='SUBMIT'>
+					</td>
+				</tr>
+			</table>
+            </form>
+			</div>
 <?php
-      if($_POST['view_client_details']){
-			echo "<script>function display_dialogue_for_view(){var modal = document.getElementById('myModalbg');
-		           modal.style.display = 'block';
-                   var spanbg = document.getElementsByClassName('closebg')[0];
-                   spanbg.onclick = function() {
-                   modal.style.display = 'none';
-                  }
-                   window.onclick = function(event) {
-                   if (event.target == modal) {
-                   modal.style.display = 'none';
-                  }
-			      }}
-				  function view_client_details(){document.getElementById('submit_popup').style.display = 'inline';
-			        document.getElementById('edit_popup').style.display = 'inline';
-			        var popup_fields = document.getElementsByClassName('popup_input_field');
-				    popup_fields[0].readOnly=true;
-				    popup_fields[1].readOnly=true;
-			        popup_fields[2].readOnly=true;
-				    popup_fields[3].readOnly=true;
-				}display_dialogue_for_view();
-				 view_client_details();</script>";
-}
-
-      if($_POST['edit_client_details']){
-		  echo "<script>function display_dialogue_for_editing(){var modal = document.getElementById('myModalbg');
-		           modal.style.display = 'block';
-                   var spanbg = document.getElementsByClassName('closebg')[0];
-                   spanbg.onclick = function() {
-                   modal.style.display = 'none';
-                  }
-                   window.onclick = function(event) {
-                   if (event.target == modal) {
-                   modal.style.display = 'none';
-                  }
-			      }}
-	              display_dialogue_for_editing();
-				  function edit_details(){document.getElementById('submit_popup').style.display='none';
-			      document.getElementById('edit_popup').style.display='none';
-				}edit_details();</script>";
-	  }
-
       if ($_POST['SUBMIT']) {
         if ((!empty($_POST['clientName1'])) && (!empty($_POST['educash1'])) && (!($check_client == 0))) {
 			echo "<script>function display_dialogue(){var modal = document.getElementById('myModalbg');
@@ -298,10 +345,12 @@ function allocate_educash_form_page()
         modal.style.display = 'none';
         }
 			}}
-	    display_dialogue();</script>";};}
-?>
-<?php
+	    display_dialogue();</script>";
+		};
+		}
+
 //Displaying the transaction made just now if the values are legal and sending a mail to respective client otherwise displaying error message
+
     $client_display_name = $wpdb->get_var("SELECT display_name FROM $users_table WHERE user_email = '$clientName' ");
     if ($_POST['submit'] && (!empty($_POST['clientName'])) && (!empty($_POST['educash'])) && (!($check_client == 0))) {
         if($final_total<0){
@@ -326,16 +375,6 @@ function allocate_educash_form_page()
         $arr2 = array($client_display_name, $educash_added, $sum, "https://edugorilla.com/", "", "", "", "", "", "");
         $positive_email_body = str_replace($arr1, $arr2, $edugorilla_email_datas['body']);
         $message =  $positive_email_body;
-		
-		$client_ID_result = $wpdb->get_var("SELECT ID FROM $users_table WHERE user_email = '$clientName' ");
-		$all_meta_for_user = get_user_meta( $client_ID_result );
-	    $client_firstname = $all_meta_for_user['user_general_first_name'][0];
-	    $client_lastname = $all_meta_for_user['user_general_last_name'][0];
-	    $client_street = $all_meta_for_user['user_address_street_and_number'][0];
-	    $client_city = $all_meta_for_user['user_address_city'][0];
-	    $client_postal_code = $all_meta_for_user['user_address_postal_code'][0];
-	    $client_state = $all_meta_for_user['user_address_county'][0];
-	    $client_country = $all_meta_for_user['user_address_country'][0];
 
 //Creating invoice
 
@@ -372,19 +411,18 @@ function allocate_educash_form_page()
         $pdf->addLineFormat( $cols);
         $pdf->addLineFormat($cols);
         $y    = 157;
+		$educash_rate = get_option("current_rate");
         $line = array( "ITEM"      => "EDUCASH",
-                       "RATE"      => $educash_added/$money,
+                       "RATE"      => $educash_rate['rate'],
                        "QUANTITY"  => $educash_added,
                        "AMOUNT"    => "Rs. ".$money."/-");
         $size = $pdf->addLine( $y, $line );
         $y   += $size + 2;
         $pdf->left_blocks(80, 200, "TOTAL: ");
         $pdf->left_blocks(80, 220, "PAYMENT MADE: ");
-        $pdf->left_blocks(80, 240, "BALANCE DUE: ");
 
 		$pdf->left_blocks(40, 200, "Rs. ".$money."/-");
         $pdf->left_blocks(40, 220, "Rs. ".$money."/-");
-        $pdf->left_blocks(40, 240, "Rs. 0/-");
         $pdf->right_blocks(25, 200, 16, "Thanks For Your Business");
 
 
