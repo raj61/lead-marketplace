@@ -4,8 +4,8 @@
 
 	   <div id="wrap">
           <ul class="tab">
-              <li><a href="#" class="tablinks active" onclick="select_page('edugorilla_leads_sh')">Edugorilla Leads</a></li>
-              <li><a href="#" class="tablinks" onclick="select_page('educash_payment_sh')">Educash Payment</a></li>
+	          <li><a href="#" class="tablinks active" onclick="select_page('edugorilla_leads_sh')">Leads</a></li>
+	          <li><a href="#" class="tablinks" onclick="select_page('educash_payment_sh')">Buy</a></li>
               <li><a href="#" class="tablinks" onclick="select_page('transaction_history_sh')">Transaction History</a></li>
               <li><a href="#" class="tablinks" onclick="select_page('client_preference_form_sh')">Manage Preferences</a></li>
           </ul> 

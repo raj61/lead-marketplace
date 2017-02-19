@@ -49,6 +49,7 @@
             </ul>
 		</div>
 		<div class="container col-sm-8">
+			<div ng-hide="cards.length">No items found</div>
 			<div ng-repeat="card in cards" class="repeated-item">
 				<div class="container col-sm-6" id="stamp" ng-if="cardSelectionCriteria(card)">
 					<div class="contents">
@@ -65,12 +66,12 @@
 						<p>{{card.query}}</p>
 						<p ng-if="card.isUnlocked">Email : {{card.email}}</p>
 						<p ng-if="card.isUnlocked">Contact : {{card.contact_no}}</p>
-						<div class="hide_lead" ng-if="!card.isUnlocked && !card.isHidden">
+						<div class="hide_lead" ng-if="!card.isUnlocked && !cardHiddenStatus(card)">
 							<button type="submit" class="btn btn-danger" ng-click="toggle_card_hidden(card)">
 								<i class="fa fa-eye-slash fa-fw"></i> Hide
 							</button>
 						</div>
-						<div class="hide_lead" ng-if="!card.isUnlocked && card.isHidden">
+						<div class="hide_lead" ng-if="!card.isUnlocked && cardHiddenStatus(card)">
 							<button type="submit" class="btn btn-warning" ng-click="toggle_card_hidden(card)">
 								<i class="fa fa-eye fa-fw"></i> Show
 							</button>
