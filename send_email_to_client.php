@@ -175,7 +175,7 @@ function edugorilla_client(){
 	function do_this_weekly() {
 	//do something weekly 
 	// send mail every week at 12PM on Friday
-		$edugorilla_email = get_option('edugorilla_email_setting1');
+		$edugorilla_email = get_option('email_setting_form_weekly');
 		$edugorilla_email_body = stripslashes($edugorilla_email['body']);
 		global $wpdb;
 		$table_name1 = $wpdb->prefix .'edugorilla_lead_details';
@@ -188,11 +188,13 @@ function edugorilla_client(){
 			# code...
 		if(preg_match('/Weekly_Digest/',$client->preferences)) {
 			$category_location_lead_count = 0;
+			$category_val = null;
+			$location_val = null;
 			foreach ($lead_details as $lead_detail) {
 				# code...
 				if(preg_match('/'.$lead_detail->category_id.'/',$client->category) AND preg_match('/'.$lead_detail->location_id.'/',$client->location)){
 					# code...
-					if (empty($category_val) || empty($location_val)){
+					if ($category_val == null || $location_val == null){
 						# code...
 						$categories_all = get_terms('listing_categories', array('hide_empty' => false));
 						$location_all = get_terms('locations', array('hide_empty' => false));
@@ -247,7 +249,7 @@ function edugorilla_client(){
 				# code...
 				if(preg_match('/'.$lead_detail->category_id.'/',$client->category) AND preg_match('/'.$lead_detail->location_id.'/',$client->location)){
 					# code...
-					if ($category_val == null || $location_val == null)){
+					if ($category_val == null || $location_val == null){
 						# code...
 						$categories_all = get_terms('listing_categories', array('hide_empty' => false));
 						$location_all = get_terms('locations', array('hide_empty' => false));
@@ -284,7 +286,7 @@ function edugorilla_client(){
 	function do_this_monthly() {
 		//do something every month
 		// send mail every month at 12PM on Friday
-		$edugorilla_email = get_option('edugorilla_email_setting1');
+		$edugorilla_email = get_option('email_setting_form_monthly');
 		$edugorilla_email_body = stripslashes($edugorilla_email['body']);
 		global $wpdb;
 		$table_name1 = $wpdb->prefix .'edugorilla_lead_details';
@@ -297,11 +299,13 @@ function edugorilla_client(){
 			# code...
 		if(preg_match('/Monthly_Digest/',$client->preferences)) {
 			$category_location_lead_count = 0;
+			$category_val = null;
+			$location_val = null;
 			foreach ($lead_details as $lead_detail) {
 				# code...
 				if(preg_match('/'.$lead_detail->category_id.'/',$client->category) AND preg_match('/'.$lead_detail->location_id.'/',$client->location)){
 					# code...
-					if (empty($category_val) || empty($location_val)){
+					if ($category_val == null || $location_val == null){
 						# code...
 						$categories_all = get_terms('listing_categories', array('hide_empty' => false));
 						$location_all = get_terms('locations', array('hide_empty' => false));
