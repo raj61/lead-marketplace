@@ -20,6 +20,9 @@
 				}
 				return true;
 			};
+			$scope.cardHiddenStatus = function (card) {
+				return card.isHidden;
+			};
 			$scope.containsInArray = function(a, obj) {
 				for (var i = 0; i < a.length; i++) {
 					if (a[i] === obj) {
