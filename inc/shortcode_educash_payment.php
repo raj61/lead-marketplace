@@ -24,9 +24,9 @@
         $karmapay = plugins_url('/karmapay.php',__FILE__);
         ?>
 
+      <form name="tranaction_form" ng-app="" ng-init="amount='0';" method="post" action="">
         <div class="pay_card"  style="background-image: url("<?php echo $background;?>");">
-          <div class ="pay_card2">
-            <form name="tranaction_form" ng-app="" ng-init="amount='0';" method="post" action="">
+          <div class ="pay_card2">           
               <input name="userid" id="userid" value="<?php echo $current_user->id; ?>" type="hidden" />
               <input name="allocation_page" id="allocation_page" value="<?php echo $allocation_page; ?>" type="hidden" />
               <input name="email" id="email" value="<?php echo $current_user->user_email; ?>" type="hidden" />
