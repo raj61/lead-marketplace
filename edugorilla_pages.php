@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 	function show_all_other_shortcodes(){ ?>
 
@@ -8,13 +8,10 @@
 	          <li><a href="#" class="tablinks" onclick="select_page('educash_payment_sh')">Buy</a></li>
               <li><a href="#" class="tablinks" onclick="select_page('transaction_history_sh')">Transaction History</a></li>
               <li><a href="#" class="tablinks" onclick="select_page('client_preference_form_sh')">Manage Preferences</a></li>
-          </ul> 
+          </ul>
       </div>
 
-		<div id="#edugorilla_content">     
-	        <div id="edugorilla_leads_sh" class="tabcontent">
-	          	<?php echo do_shortcode('[edugorilla_leads]');  ?>
-	        </div>
+		<div id="#edugorilla_content">
 	        <div id="educash_payment_sh" class="tabcontent" style="display: none;">
 	          	<?php echo do_shortcode('[educash_payment]');  ?>
 	        </div>
@@ -24,10 +21,13 @@
 	        <div id="client_preference_form_sh" class="tabcontent" style="display: none;">
 	          	<?php echo do_shortcode('[client_preference_form]');  ?>
 	        </div>
+			<div id="edugorilla_leads_sh" class="tabcontent">
+	          	<?php echo do_shortcode('[edugorilla_leads]');  ?>
+	        </div>
         </div>
 
 <style type="text/css">
- 	
+
 ul.tab {
     list-style-type: none;
     margin: 0;
@@ -63,7 +63,7 @@ ul.tab li a:focus, .active {background-color: #ccc;}
  </style>
 
 <script type="text/javascript">
-	
+
 	function select_page(edugorilla_page) {
 
     var i, tabcontent, tablinks;
@@ -79,13 +79,13 @@ ul.tab li a:focus, .active {background-color: #ccc;}
     }
 
     document.getElementById(edugorilla_page).style.display = "block";
-    evt.currentTarget.className += " active";
+    event.currentTarget.className += " active";
 	}
-</script>   
+</script>
 
 
 <?php
-	
+
 	}
 
 	add_shortcode('edugorilla_pages_ui','show_all_other_shortcodes');

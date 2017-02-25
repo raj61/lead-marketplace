@@ -1,15 +1,3 @@
-//payumoney angular js payumoney_parameters
- var app = angular.module('myApp', []);
- app.controller('personCtrl', function($scope) {
-     $scope.fullamount = function() {
-     $scope.lastName = angular.isNumber($scope.amount);
-     if ($scope.lastName==false) {
-           $scope.amount=0;
-         }
-         return $scope.amount;
-     };
- });
-
 (function (angular) {
 	'use strict';
 	angular.module('leadPortalModule', ['ngAnimate'])
