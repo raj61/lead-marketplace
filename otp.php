@@ -142,25 +142,6 @@ function edugorilla_settings()
           </form>
           </div></br></br>
       </div>
-
-      <div id="tabs-3">
-          <div class="wrap">
-          <h1>Conversion Rate - Rs to educash</h1><br>
-            <form method="post" action="">
-                <table>
-                    <tr>
-                        <th>New Rate</th>
-                        <td>
-                            <input type="number" name="rate"/> rs</br></br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="submit" class="button button-primary" value="Save"></td>
-                    </tr>
-                </table>
-            </form>
-          </div>
-
       <?php
       if (isset($_POST['salt']) && isset($_POST['mcid']) )
       {
@@ -179,7 +160,28 @@ function edugorilla_settings()
           echo "<h2>Please fill salt and test key properly </h2><br><br>";
         }
       }
+}
 
+
+function conversion_tables(){?>
+    <div class="wrap">
+     <h1>Conversion Rate - Rs to educash</h1><br>
+        <form method="post" action="">
+            <table>
+                <tr>
+                <th>New Rate</th>
+                    <td>
+                        <input type="number" name="rate"/> rs</br></br>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="submit" class="button button-primary" value="Save"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+       <?php
       if (isset($_POST['rate']))
       {
         if(!empty($_POST['rate']))
@@ -199,8 +201,7 @@ function edugorilla_settings()
         </tr>
     </table><br></br>
 
-
-      <div class="wrap">
+    <div class="wrap">
       <h1>Conversion Rate - Karma to educash</h1><br>
         <form method="post" action="">
             <table>
@@ -215,7 +216,7 @@ function edugorilla_settings()
                 </tr>
             </table>
         </form>
-      </div>
+    </div>
 
       <?php
       if (isset($_POST['karma']))
@@ -271,9 +272,7 @@ function edugorilla_settings()
            $out = get_option("educashtolead_rate");
           echo $out['rate']; ?> educash</td>
       </tr>
-  </table><br></br>
-
-    </div>
-  <?php
+    </table>
+<?php
   }
-  ?>
+?>

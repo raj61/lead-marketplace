@@ -1,6 +1,15 @@
-/**
- * Created by ananth on 7/1/17.
- */
+function showHint(str) {
+    if (str.length == 0) {
+        document.getElementById("rspayment").innerHTML = "0";
+        document.getElementById("karmapayment").innerHTML = "0";
+    } else {
+        var rs = document.getElementById("rspay").value;
+        var karma = document.getElementById("karmapay").value;
+        document.getElementById("rspayment").innerHTML = parseInt(str)*parseInt(rs);
+        document.getElementById("karmapayment").innerHTML = parseInt(str)*parseInt(karma);
+    }
+}
+
 (function (angular) {
 	'use strict';
 	angular.module('leadPortalModule', ['ngAnimate'])

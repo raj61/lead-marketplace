@@ -192,6 +192,15 @@ function create_edugorilla_menus()
 		'transaction_history_form_page'
 	);
 
+	add_submenu_page(
+		'edugorilla',
+		'Lead Marketplace | Conversion Tables',
+		'Conversion Tables',
+		'read',
+		'conversion-tables',
+		'conversion_tables'
+	);
+
     add_submenu_page(
 		'edugorilla',
 		'Lead Marketplace | Third Party Settings',
