@@ -1,16 +1,3 @@
-<script>
-function showHint(str) {
-    if (str.length == 0) {
-        document.getElementById("rspayment").innerHTML = "0";
-        document.getElementById("karmapayment").innerHTML = "0";
-    } else {
-        var rs = document.getElementById("rspay").value;
-        var karma = document.getElementById("karmapay").value;
-        document.getElementById("rspayment").innerHTML = parseInt(str)*parseInt(rs);
-        document.getElementById("karmapayment").innerHTML = parseInt(str)*parseInt(karma);
-    }
-}
-</script>
 <?php
   session_start();
   add_shortcode('educash_payment','educash_payment');
@@ -31,11 +18,12 @@ function showHint(str) {
         $angpath = plugin_dir_url(__FILE__) ;
         $angpath = str_replace('inc/','frontend/js/lead-portal.js',$angpath);
 
-        add_action( 'wp_enqueue_scripts', 'load_angular_javascript' );
-        function load_angular_javascript()
+        function wptuts_scripts_basic()
         {
-            wp_enqueue_script('angular-js', $angpath);
+        wp_register_script( 'custom-script', $angpath );
+        wp_enqueue_script( 'custom-script' );
         }
+        add_action( 'wp_enqueue_scripts', 'wptuts_scripts_basic' );
 
         $credentials = get_option("payumoney_parameters");
         $background = plugins_url('payumoney/background.png',__FILE__);
