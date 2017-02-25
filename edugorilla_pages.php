@@ -11,7 +11,10 @@
           </ul>
       </div>
 
-		<div id="#edugorilla_content">
+			<div id="#edugorilla_content">
+			<div id="edugorilla_leads_sh" class="tabcontent">
+	  			 <?php echo do_shortcode('[edugorilla_leads]');  ?>
+	  		 </div>
 	        <div id="educash_payment_sh" class="tabcontent" style="display: none;">
 	          	<?php echo do_shortcode('[educash_payment]');  ?>
 	        </div>
@@ -21,9 +24,7 @@
 	        <div id="client_preference_form_sh" class="tabcontent" style="display: none;">
 	          	<?php echo do_shortcode('[client_preference_form]');  ?>
 	        </div>
-			<div id="edugorilla_leads_sh" class="tabcontent">
-	          	<?php echo do_shortcode('[edugorilla_leads]');  ?>
-	        </div>
+
         </div>
 
 <style type="text/css">
